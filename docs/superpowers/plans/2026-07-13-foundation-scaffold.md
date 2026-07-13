@@ -20,6 +20,8 @@
 - `src/api/<domain>.ts` functions return `Promise`s (via `simulateRequest` in `src/api/http.ts`); pages consume them with plain `useState`/`useEffect`, not a custom hook or library.
 - Do not touch or delete `index.html`, `faculty.html`, `ops.html`, `student.html` at the repo root — they are retired phase-by-phase in Phases 1–4, not here.
 
+**Amendment (found during execution of Task 1):** the legacy `index.html` already occupies the repo root, colliding with Vite's required root-level entry file of the same name. Resolution: the new Vite project lives under `app/` instead of the true repo root. Every file path below that starts with `src/`, or names `package.json`, `tsconfig.json`, `tsconfig.app.json`, `tsconfig.node.json`, `vite.config.ts`, `eslint.config.js`, or the *new* `index.html`, is relative to `app/` (e.g. `src/theme/tokens.ts` means `app/src/theme/tokens.ts`; the new `index.html` means `app/index.html`). `npm install` / `npm run dev` / `npm run build` / `npm run lint` all run with `app/` as the working directory. The `@/*` import alias, and every `@/...` import shown in code, is unaffected (it still resolves to `app/src/*`). The legacy root-level `index.html`, `faculty.html`, `ops.html`, `student.html` are untouched by this change.
+
 ---
 
 ### Task 1: Project scaffold
@@ -68,6 +70,7 @@
   "devDependencies": {
     "@eslint/js": "^9.39.4",
     "@tailwindcss/vite": "^4.2.1",
+    "@types/node": "^22.13.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^4.7.0",
@@ -81,6 +84,8 @@
   }
 }
 ```
+
+**Amendment (found during execution):** `@types/node` is required in addition to school-erp's dependency list — `tsc -b` builds `tsconfig.node.json` (which includes `vite.config.ts`, using Node's `path` module and `__dirname`) as part of the project-reference graph, and without `@types/node` this fails with `TS2307`/`TS2304`. school-erp's own root `tsconfig.json` sidesteps this because it was later flattened to a single self-contained config (`include: ["src"]`, no `references`) that never asks `tsc -b` to check `vite.config.ts` at all, leaving its `tsconfig.app.json` unused. This plan keeps the standard three-file project-reference split (cleaner, no dead config file) and fixes the real gap by adding `@types/node` instead.
 
 - [ ] **Step 2: Create `tsconfig.json`**
 
