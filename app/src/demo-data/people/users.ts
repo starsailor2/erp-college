@@ -1,7 +1,9 @@
 import type { AdminUser, UserRole, AccountStatus } from "@/types";
 import { randomFullName } from "@/demo-data/generators/namePools";
-import { pick, randomInt, weightedPick } from "@/demo-data/generators/random";
+import { createRng } from "@/demo-data/generators/random";
 import { departmentSeeds } from "@/demo-data/academics/departmentSeeds";
+
+const { pick, randomInt, weightedPick } = createRng(50260711);
 
 const roles: [UserRole, number][] = [
   ["faculty", 5],
@@ -18,7 +20,7 @@ function generateUsers(): AdminUser[] {
     const status: AccountStatus = weightedPick([["active", 9], ["inactive", 1]]);
     list.push({
       id: `USR-${String(i).padStart(3, "0")}`,
-      name: randomFullName(),
+      name: randomFullName(pick),
       role: weightedPick(roles),
       departmentId: pick(departmentSeeds).id,
       email: `user${i}@kalnet.edu`,

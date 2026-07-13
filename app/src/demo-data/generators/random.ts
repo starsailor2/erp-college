@@ -1,5 +1,11 @@
-// Deterministic PRNG (mulberry32) so demo data stays stable across reloads
-// instead of reshuffling every time a module re-evaluates.
+// Deterministic PRNG (mulberry32). Each demo-data module creates its own
+// independent instance via createRng(seed) rather than sharing one global
+// generator - with route-based code splitting, different navigation paths
+// import (and first-evaluate) demo-data modules in different orders, so a
+// single shared counter would make "the same seed" produce different
+// values depending on which page loads first. A private instance per
+// module keeps each domain's generated data stable regardless of
+// navigation order.
 function mulberry32(seed: number) {
   let a = seed;
   return function random() {
@@ -11,35 +17,40 @@ function mulberry32(seed: number) {
   };
 }
 
-const seededRandom = mulberry32(20260711);
-
-export function rng(): number {
-  return seededRandom();
+export interface Rng {
+  next: () => number;
+  pick: <T>(arr: readonly T[]) => T;
+  randomInt: (min: number, max: number) => number;
+  shuffle: <T>(arr: readonly T[]) => T[];
+  weightedPick: <T>(entries: readonly [T, number][]) => T;
 }
 
-export function pick<T>(arr: readonly T[]): T {
-  return arr[Math.floor(rng() * arr.length)];
-}
+export function createRng(seed: number): Rng {
+  const next = mulberry32(seed);
 
-export function randomInt(min: number, max: number): number {
-  return min + Math.floor(rng() * (max - min + 1));
-}
+  const pick = <T>(arr: readonly T[]): T => arr[Math.floor(next() * arr.length)];
 
-export function shuffle<T>(arr: readonly T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
+  const randomInt = (min: number, max: number): number =>
+    min + Math.floor(next() * (max - min + 1));
 
-export function weightedPick<T>(entries: readonly [T, number][]): T {
-  const total = entries.reduce((sum, [, w]) => sum + w, 0);
-  let r = rng() * total;
-  for (const [value, weight] of entries) {
-    r -= weight;
-    if (r <= 0) return value;
-  }
-  return entries[entries.length - 1][0];
+  const shuffle = <T>(arr: readonly T[]): T[] => {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(next() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  };
+
+  const weightedPick = <T>(entries: readonly [T, number][]): T => {
+    const total = entries.reduce((sum, [, w]) => sum + w, 0);
+    let r = next() * total;
+    for (const [value, weight] of entries) {
+      r -= weight;
+      if (r <= 0) return value;
+    }
+    return entries[entries.length - 1][0];
+  };
+
+  return { next, pick, randomInt, shuffle, weightedPick };
 }

@@ -1,8 +1,10 @@
 import type { Student, AcademicStatus, FeeStatus } from "@/types";
 import { randomFullName } from "@/demo-data/generators/namePools";
-import { pick, randomInt, weightedPick } from "@/demo-data/generators/random";
+import { createRng } from "@/demo-data/generators/random";
 import { departmentSeeds, programByDepartment } from "@/demo-data/academics/departmentSeeds";
 import { getCoursesByDepartment } from "@/demo-data/academics/courses";
+
+const { pick, randomInt, weightedPick } = createRng(70260711);
 
 const CURRENT_YEAR = 2026;
 const STUDENTS_PER_DEPT_PER_YEAR = 25; // 5 depts * 4 years * 25 = 500
@@ -22,7 +24,7 @@ function generateStudents(): Student[] {
         list.push({
           id: `STU-${String(seq).padStart(4, "0")}`,
           rollNo: `${admissionYear}-${dept.id}-${String(i + 1).padStart(3, "0")}`,
-          name: randomFullName(),
+          name: randomFullName(pick),
           email: `student${seq}@kalnet.edu`,
           phone: `9${randomInt(100000000, 999999999)}`,
           departmentId: dept.id,
@@ -36,7 +38,7 @@ function generateStudents(): Student[] {
           cgpa: randomInt(60, 98) / 10,
           feeStatus,
           address: `${randomInt(1, 200)}, ${pick(streetNames)}, City`,
-          guardianName: randomFullName(),
+          guardianName: randomFullName(pick),
           guardianContact: `9${randomInt(100000000, 999999999)}`,
           courseIds: deptCourses.slice(0, 5).map((c) => c.id),
         });

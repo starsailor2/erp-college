@@ -1,7 +1,9 @@
 import type { ActivityLogEntry, ActivityCategory } from "@/types";
 import { randomFullName } from "@/demo-data/generators/namePools";
-import { pick, randomInt } from "@/demo-data/generators/random";
+import { createRng } from "@/demo-data/generators/random";
 import { departmentSeeds } from "@/demo-data/academics/departmentSeeds";
+
+const { pick, randomInt } = createRng(80260711);
 
 const activitiesByCategory: [string, ActivityCategory][] = [
   ["Updated course syllabus", "academic"],
@@ -28,7 +30,7 @@ function generateActivityLog(): ActivityLogEntry[] {
     list.push({
       id: `act-${i + 1}`,
       timestamp: `2026-07-${day}T${hour}:${minute}:00Z`,
-      actorName: randomFullName(),
+      actorName: randomFullName(pick),
       activity,
       departmentId: pick(departmentSeeds).id,
       category,

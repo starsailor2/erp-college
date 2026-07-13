@@ -1,4 +1,4 @@
-import { pick } from "./random";
+import type { Rng } from "./random";
 
 export const firstNames = [
   "Aarav", "Vivaan", "Aditya", "Ishaan", "Reyansh", "Kabir", "Aryan", "Dhruv",
@@ -11,6 +11,6 @@ export const lastNames = [
   "Iyer", "Rao", "Chatterjee", "Bose", "Malhotra", "Kapoor", "Joshi", "Das",
 ];
 
-export function randomFullName(): string {
+export function randomFullName(pick: Rng["pick"]): string {
   return `${pick(firstNames)} ${pick(lastNames)}`;
 }

@@ -1,7 +1,9 @@
 import type { Department } from "@/types";
 import { departmentSeeds } from "./departmentSeeds";
 import { faculty } from "@/demo-data/people/faculty";
-import { randomInt } from "@/demo-data/generators/random";
+import { createRng } from "@/demo-data/generators/random";
+
+const { randomInt } = createRng(40260711);
 
 function generateDepartments(): Department[] {
   return departmentSeeds.map((seed) => {

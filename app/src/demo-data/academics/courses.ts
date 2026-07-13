@@ -1,7 +1,9 @@
 import type { Course, CourseType } from "@/types";
 import { departmentSeeds } from "./departmentSeeds";
 import { faculty } from "@/demo-data/people/faculty";
-import { pick, weightedPick, randomInt } from "@/demo-data/generators/random";
+import { createRng } from "@/demo-data/generators/random";
+
+const { pick, weightedPick, randomInt } = createRng(60260711);
 
 const courseNamesByDept: Record<string, string[]> = {
   CSE: ["Introduction to Programming", "Data Structures", "Database Systems", "Operating Systems", "Computer Networks", "Software Engineering", "Algorithms", "Web Development", "Machine Learning", "Artificial Intelligence"],

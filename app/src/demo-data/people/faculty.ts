@@ -1,7 +1,9 @@
 import type { Faculty, FacultyDesignation, AccountStatus } from "@/types";
 import { randomFullName } from "@/demo-data/generators/namePools";
-import { pick, randomInt, weightedPick } from "@/demo-data/generators/random";
+import { createRng } from "@/demo-data/generators/random";
 import { departmentSeeds } from "@/demo-data/academics/departmentSeeds";
+
+const { pick, randomInt, weightedPick } = createRng(30260711);
 
 const designations: [FacultyDesignation, number][] = [
   ["professor", 1],
@@ -29,7 +31,7 @@ function generateFaculty(): Faculty[] {
       const joiningYear = randomInt(2000, 2023);
       list.push({
         id: `FAC${String(seq).padStart(3, "0")}`,
-        name: randomFullName(),
+        name: randomFullName(pick),
         departmentId: dept.id,
         designation: weightedPick(designations),
         email: `faculty${seq}@kalnet.edu`,
