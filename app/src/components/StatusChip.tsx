@@ -6,6 +6,8 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import HourglassTopIcon from "@mui/icons-material/HourglassTop";
 import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import EventIcon from "@mui/icons-material/Event";
 import { statusTokens } from "@/theme/tokens";
 import type { SvgIconComponent } from "@mui/icons-material";
 
@@ -38,6 +40,9 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   // Notifications / messages
   read: { label: "Read", color: statusTokens.good, icon: MarkEmailReadIcon },
   unread: { label: "Unread", color: statusTokens.warning, icon: MarkEmailUnreadIcon },
+  // Activity log
+  pending_approval: { label: "Pending Approval", color: statusTokens.warning, icon: PendingActionsIcon },
+  scheduled: { label: "Scheduled", color: statusTokens.warning, icon: EventIcon },
 };
 
 interface StatusChipProps {
