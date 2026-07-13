@@ -894,6 +894,8 @@ git commit -m "Add AuthContext with simulated role-based login"
 **Interfaces:**
 - Produces: `rng()`, `pick(arr)`, `randomInt(min, max)`, `shuffle(arr)`, `weightedPick(entries)` from `random.ts`; `firstNames`, `lastNames`, `randomFullName()` from `namePools.ts` — used by Task 7's notifications demo data, and by every later phase's generated demo data (students, staff, etc.).
 
+**Amendment (found during Phase 1a verification):** the shared-singleton design below (`rng()` as one global counter, `randomFullName()` with no parameter) turned out to be non-deterministic in practice. React Router's route-based code splitting means different navigation paths import — and first-evaluate — demo-data modules in a different order, so the *position* in the shared PRNG sequence at which any given module starts consuming values depends on which page loaded first. The fix adopted in Phase 1a: `random.ts` exports `createRng(seed): Rng` (an object with `next/pick/randomInt/shuffle/weightedPick` bound to that seed) instead of shared top-level functions, `randomFullName(pick)` takes the caller's own `pick` as a parameter instead of importing a shared one, and **every domain module creates its own `createRng(<its own seed>)` instance** at the top of the file. Follow that pattern (not the one shown below) for any new demo-data generator in Phases 1b–4 — see `src/demo-data/generators/random.ts` and any Phase 1a generator (e.g. `src/demo-data/people/faculty.ts`) for the corrected shape.
+
 - [ ] **Step 1: Create `src/demo-data/generators/random.ts`**
 
 ```ts

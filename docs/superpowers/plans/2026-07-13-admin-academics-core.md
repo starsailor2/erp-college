@@ -19,6 +19,8 @@
 - Simple synchronous foreign-key name lookups inside a table cell's `render` (e.g. showing a department's name for a `departmentId`) may call a demo-data module's sync helper (e.g. `getDepartmentById`) directly instead of going through the async API — reserved for cheap inline display lookups only; the page's own primary rows always come from the async `api/*` layer.
 - No new shared "form dialog" wrapper component — MUI `Dialog` used directly per page.
 
+**Amendment (found during Task 16 verification):** Tasks 3–7 below each show `import { pick, randomInt, weightedPick } from "@/demo-data/generators/random"` and `randomFullName()` with no argument — that was Phase 0's original (buggy) shared-PRNG-singleton design. It was found to be non-deterministic across navigation paths (see the corresponding amendment in the Phase 0 plan) and fixed: `random.ts` now exports `createRng(seed): Rng`, and every domain module creates its own instance, e.g. `const { pick, randomInt, weightedPick } = createRng(30260711);` at the top of the file (each module uses a distinct seed), and calls `randomFullName(pick)`. The actual committed code in `faculty.ts` (seed `30260711`), `departments.ts` (`40260711`), `users.ts` (`50260711`), `courses.ts` (`60260711`), `students.ts` (`70260711`), and `activityLog.ts` (`80260711`) reflects this fix — read those files rather than the `import { pick, ... }` lines shown in Tasks 3–7's code blocks below.
+
 ---
 
 ### Task 1: Type definitions
