@@ -206,3 +206,76 @@ export interface Payment {
   mode: PaymentMode;
   status: PaymentStatus;
 }
+
+// --- Admin / Campus Operations (Phase 1d) ---
+
+export type AssetCondition = "excellent" | "good" | "fair" | "poor";
+export type AssetStatus = "active" | "maintenance" | "retired";
+export interface MaintenanceRecord {
+  title: string;
+  date: string;
+}
+export interface Asset {
+  id: string; // "AST-2024-001"
+  name: string; // e.g. "Dell Latitude 5420 Laptop"
+  type: string; // e.g. "Projector", "Computer", "Furniture"
+  location: string;
+  condition: AssetCondition;
+  status: AssetStatus;
+  lastMaintenance: string;
+  value: number;
+  purchaseDate: string;
+  maintenanceHistory: MaintenanceRecord[];
+}
+
+export type TicketPriority = "critical" | "high" | "medium" | "low";
+export type TicketStatus = "open" | "in_progress" | "resolved";
+export type SlaState = "on_track" | "breached" | "resolved";
+export interface Ticket {
+  id: string; // "REQ-2095"
+  title: string;
+  description: string;
+  location: string;
+  priority: TicketPriority;
+  assignedTo: string | null;
+  status: TicketStatus;
+  createdLabel: string; // e.g. "10:42 AM", "Yesterday"
+  slaState: SlaState;
+  slaDetail: string; // e.g. "2h 15m overdue", "1h 30m remaining", "45m ahead"
+  resolutionHours?: number; // set only once status is "resolved"
+}
+
+export interface HostelStats {
+  totalBeds: number;
+  occupied: number;
+  available: number;
+  maintenance: number;
+}
+
+export interface FacilityStats {
+  todayBookings: number;
+  auditoriumUtilizationPct: number;
+  sportsUtilizationPct: number;
+  pendingApprovals: number;
+}
+
+export type BookStatus = "available" | "issued" | "reserved";
+export interface Book {
+  id: string; // "BK001"
+  title: string;
+  author: string;
+  isbn: string;
+  category: string;
+  status: BookStatus;
+  availableCopies: number;
+}
+
+export type LibraryTransactionStatus = "active" | "overdue" | "returned";
+export interface LibraryTransaction {
+  id: string; // "LIB-1234"
+  studentId: string;
+  bookId: string;
+  issueDate: string;
+  dueDate: string;
+  status: LibraryTransactionStatus;
+}
