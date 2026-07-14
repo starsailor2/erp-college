@@ -9,6 +9,8 @@ import MarkEmailUnreadIcon from "@mui/icons-material/MarkEmailUnread";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import EventIcon from "@mui/icons-material/Event";
 import HourglassBottomIcon from "@mui/icons-material/HourglassBottom";
+import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import { statusTokens } from "@/theme/tokens";
 import type { SvgIconComponent } from "@mui/icons-material";
 
@@ -47,6 +49,20 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   // Payments
   verified: { label: "Verified", color: statusTokens.good, icon: CheckCircleIcon },
   pending_clearance: { label: "Pending Clearance", color: statusTokens.warning, icon: HourglassBottomIcon },
+  // Assets
+  maintenance: { label: "Maintenance", color: statusTokens.warning, icon: HourglassTopIcon },
+  retired: { label: "Retired", color: statusTokens.serious, icon: CancelIcon },
+  // Tickets
+  open: { label: "Open", color: statusTokens.warning, icon: ScheduleIcon },
+  resolved: { label: "Resolved", color: statusTokens.good, icon: CheckCircleIcon },
+  // Priority
+  critical: { label: "Critical", color: statusTokens.critical, icon: ErrorIcon },
+  high: { label: "High", color: statusTokens.serious, icon: WarningAmberIcon },
+  medium: { label: "Medium", color: statusTokens.warning, icon: ScheduleIcon },
+  low: { label: "Low", color: statusTokens.good, icon: CheckCircleIcon },
+  // Library
+  available: { label: "Available", color: statusTokens.good, icon: CheckCircleIcon },
+  reserved: { label: "Reserved", color: statusTokens.warning, icon: BookmarkIcon },
 };
 
 interface StatusChipProps {
