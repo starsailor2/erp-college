@@ -25,10 +25,11 @@ export default function AssetProfile() {
   const [editForm, setEditForm] = useState({ name: "", status: "active" as AssetStatus, value: 0, location: "" });
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
-  const load = () => {
-    if (id) getAssetByIdAsync(id).then((data) => { setAsset(data); setLoaded(true); });
-  };
-  useEffect(() => { load(); }, [id]);
+  useEffect(() => {
+    let live = true;
+    if (id) getAssetByIdAsync(id).then((data) => { if (live) { setAsset(data); setLoaded(true); } });
+    return () => { live = false; };
+  }, [id]);
 
   if (loaded && !asset) {
     return <EmptyState title="Asset not found" description={`No asset with id "${id}".`} />;
@@ -36,7 +37,7 @@ export default function AssetProfile() {
   if (!asset) return null;
 
   const openEdit = () => { setEditForm({ name: asset.name, status: asset.status, value: asset.value, location: asset.location }); setEditOpen(true); };
-  const handleSave = () => { updateAsset(asset.id, editForm).then(load); setEditOpen(false); };
+  const handleSave = () => { updateAsset(asset.id, editForm).then((data) => setAsset(data)); setEditOpen(false); };
 
   return (
     <>

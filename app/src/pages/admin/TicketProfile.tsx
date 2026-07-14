@@ -13,10 +13,11 @@ export default function TicketProfile() {
   const [loaded, setLoaded] = useState(false);
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
-  const load = () => {
-    if (id) getTicketByIdAsync(id).then((data) => { setTicket(data); setLoaded(true); });
-  };
-  useEffect(() => { load(); }, [id]);
+  useEffect(() => {
+    let live = true;
+    if (id) getTicketByIdAsync(id).then((data) => { if (live) { setTicket(data); setLoaded(true); } });
+    return () => { live = false; };
+  }, [id]);
 
   if (loaded && !ticket) {
     return <EmptyState title="Ticket not found" description={`No ticket with id "${id}".`} />;
@@ -24,7 +25,7 @@ export default function TicketProfile() {
   if (!ticket) return null;
 
   const handleResolve = () => {
-    updateTicket(ticket.id, { status: "resolved", slaState: "resolved", slaDetail: "Resolved just now" }).then(load);
+    updateTicket(ticket.id, { status: "resolved", slaState: "resolved", slaDetail: "Resolved just now" }).then((data) => setTicket(data));
   };
 
   return (
