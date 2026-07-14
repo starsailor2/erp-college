@@ -22,6 +22,9 @@ import { getFaculty } from "@/api/faculty";
 import { getActivityLog } from "@/api/activityLog";
 import { getExams } from "@/api/exams";
 import { getFeeLedger } from "@/api/feeLedger";
+import { getTickets } from "@/api/tickets";
+import { getAssets } from "@/api/assets";
+import { getHostelStats } from "@/api/hostelStats";
 import { getDepartmentById } from "@/demo-data/academics/departments";
 import type { ActivityLogEntry, Student, Faculty } from "@/types";
 
@@ -42,6 +45,9 @@ export default function Dashboard() {
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [examCount, setExamCount] = useState(0);
   const [feeCollected, setFeeCollected] = useState(0);
+  const [openTicketCount, setOpenTicketCount] = useState(0);
+  const [assetCount, setAssetCount] = useState(0);
+  const [hostelOccupancyPct, setHostelOccupancyPct] = useState(0);
 
   useEffect(() => {
     let live = true;
@@ -50,6 +56,9 @@ export default function Dashboard() {
     getActivityLog().then((data) => { if (live) setActivity(data); });
     getExams().then((data) => { if (live) setExamCount(data.length); });
     getFeeLedger().then((data) => { if (live) setFeeCollected(data.reduce((sum, e) => sum + e.paidAmount, 0)); });
+    getTickets().then((data) => { if (live) setOpenTicketCount(data.filter((t) => t.status !== "resolved").length); });
+    getAssets().then((data) => { if (live) setAssetCount(data.length); });
+    getHostelStats().then((data) => { if (live) setHostelOccupancyPct(Math.round((data.occupied / data.totalBeds) * 100)); });
     return () => { live = false; };
   }, []);
 
@@ -69,7 +78,7 @@ export default function Dashboard() {
           <StatCard title="Faculty Members" icon={<SchoolIcon />} color={getIconAccent(mode, "faculty")} numericValue={faculty.length} onClick={() => navigate("/admin/faculty")} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Open Tickets" icon={<ConfirmationNumberIcon />} color={getIconAccent(mode, "tickets")} numericValue={42} />
+          <StatCard title="Open Tickets" icon={<ConfirmationNumberIcon />} color={getIconAccent(mode, "tickets")} numericValue={openTicketCount} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard title="Fee Collection" icon={<PaymentIcon />} color={getIconAccent(mode, "fees")} value={`₹${(feeCollected / 10000000).toFixed(1)} Cr`} />
@@ -78,10 +87,10 @@ export default function Dashboard() {
           <StatCard title="Avg Attendance" icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} value={`${avgAttendance}%`} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Total Assets" icon={<InventoryIcon />} color={getIconAccent(mode, "assets")} numericValue={1842} />
+          <StatCard title="Total Assets" icon={<InventoryIcon />} color={getIconAccent(mode, "assets")} numericValue={assetCount} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Hostel Occupancy" icon={<HotelIcon />} color={getIconAccent(mode, "hostel")} numericValue={92} formatValue={(n) => `${n}%`} />
+          <StatCard title="Hostel Occupancy" icon={<HotelIcon />} color={getIconAccent(mode, "hostel")} numericValue={hostelOccupancyPct} formatValue={(n) => `${n}%`} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard title="Upcoming Exams" icon={<GradingIcon />} color={getIconAccent(mode, "exams")} numericValue={examCount} />
