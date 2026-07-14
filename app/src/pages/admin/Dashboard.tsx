@@ -21,6 +21,7 @@ import { getStudents } from "@/api/students";
 import { getFaculty } from "@/api/faculty";
 import { getActivityLog } from "@/api/activityLog";
 import { getExams } from "@/api/exams";
+import { getFeeLedger } from "@/api/feeLedger";
 import { getDepartmentById } from "@/demo-data/academics/departments";
 import type { ActivityLogEntry, Student, Faculty } from "@/types";
 
@@ -40,6 +41,7 @@ export default function Dashboard() {
   const [activity, setActivity] = useState<ActivityLogEntry[]>([]);
   const [category, setCategory] = useState<CategoryFilter>("all");
   const [examCount, setExamCount] = useState(0);
+  const [feeCollected, setFeeCollected] = useState(0);
 
   useEffect(() => {
     let live = true;
@@ -47,6 +49,7 @@ export default function Dashboard() {
     getFaculty().then((data) => { if (live) setFaculty(data); });
     getActivityLog().then((data) => { if (live) setActivity(data); });
     getExams().then((data) => { if (live) setExamCount(data.length); });
+    getFeeLedger().then((data) => { if (live) setFeeCollected(data.reduce((sum, e) => sum + e.paidAmount, 0)); });
     return () => { live = false; };
   }, []);
 
@@ -69,7 +72,7 @@ export default function Dashboard() {
           <StatCard title="Open Tickets" icon={<ConfirmationNumberIcon />} color={getIconAccent(mode, "tickets")} numericValue={42} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Fee Collection" icon={<PaymentIcon />} color={getIconAccent(mode, "fees")} value="₹3.2 Cr" />
+          <StatCard title="Fee Collection" icon={<PaymentIcon />} color={getIconAccent(mode, "fees")} value={`₹${(feeCollected / 10000000).toFixed(1)} Cr`} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard title="Avg Attendance" icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} value={`${avgAttendance}%`} />
