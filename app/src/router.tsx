@@ -18,6 +18,9 @@ const AdminAttendance = lazy(() => import("@/pages/admin/Attendance"));
 const AdminTimetable = lazy(() => import("@/pages/admin/Timetable"));
 const AdminExams = lazy(() => import("@/pages/admin/Exams"));
 const AdminResults = lazy(() => import("@/pages/admin/Results"));
+const AdminFeeStructure = lazy(() => import("@/pages/admin/FeeStructure"));
+const AdminFeeLedger = lazy(() => import("@/pages/admin/FeeLedger"));
+const AdminPayments = lazy(() => import("@/pages/admin/Payments"));
 const TeacherDashboard = lazy(() => import("@/pages/teacher/Dashboard"));
 const StaffDashboard = lazy(() => import("@/pages/staff/Dashboard"));
 const StudentDashboard = lazy(() => import("@/pages/student/Dashboard"));
@@ -51,6 +54,9 @@ export const router = createBrowserRouter([
       { path: "admin/timetable", element: <AdminTimetable /> },
       { path: "admin/exams", element: <AdminExams /> },
       { path: "admin/results", element: <AdminResults /> },
+      { path: "admin/fees/structure", element: <AdminFeeStructure /> },
+      { path: "admin/fees/ledger", element: <AdminFeeLedger /> },
+      { path: "admin/fees/payments", element: <AdminPayments /> },
       { path: "teacher", element: <TeacherDashboard /> },
       { path: "staff", element: <StaffDashboard /> },
       { path: "student", element: <StudentDashboard /> },

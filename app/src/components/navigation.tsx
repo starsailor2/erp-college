@@ -10,6 +10,9 @@ import EventNoteIcon from "@mui/icons-material/EventNote";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import GradingIcon from "@mui/icons-material/Grading";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import PaymentIcon from "@mui/icons-material/Payment";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import ReceiptIcon from "@mui/icons-material/Receipt";
 import type { ReactNode } from "react";
 
 export interface NavItem {
@@ -34,6 +37,9 @@ export function getNavItems(role: Role): NavItem[] {
         { label: "Timetable", path: "/admin/timetable", icon: <ScheduleIcon />, group: "Academics" },
         { label: "Exams", path: "/admin/exams", icon: <GradingIcon />, group: "Academics" },
         { label: "Results", path: "/admin/results", icon: <AssessmentIcon />, group: "Academics" },
+        { label: "Fee Structure", path: "/admin/fees/structure", icon: <PaymentIcon />, group: "Finance" },
+        { label: "Student Fee Ledger", path: "/admin/fees/ledger", icon: <AccountBalanceWalletIcon />, group: "Finance" },
+        { label: "Payments & Waivers", path: "/admin/fees/payments", icon: <ReceiptIcon />, group: "Finance" },
         { label: "Users", path: "/admin/users", icon: <PeopleIcon />, group: "Administration" },
       ];
     case "teacher":
