@@ -14,6 +14,10 @@ const AdminStudentProfile = lazy(() => import("@/pages/admin/StudentProfile"));
 const AdminCourses = lazy(() => import("@/pages/admin/Courses"));
 const AdminCourseProfile = lazy(() => import("@/pages/admin/CourseProfile"));
 const AdminRegistration = lazy(() => import("@/pages/admin/Registration"));
+const AdminAttendance = lazy(() => import("@/pages/admin/Attendance"));
+const AdminTimetable = lazy(() => import("@/pages/admin/Timetable"));
+const AdminExams = lazy(() => import("@/pages/admin/Exams"));
+const AdminResults = lazy(() => import("@/pages/admin/Results"));
 const TeacherDashboard = lazy(() => import("@/pages/teacher/Dashboard"));
 const StaffDashboard = lazy(() => import("@/pages/staff/Dashboard"));
 const StudentDashboard = lazy(() => import("@/pages/student/Dashboard"));
@@ -43,6 +47,10 @@ export const router = createBrowserRouter([
       { path: "admin/courses", element: <AdminCourses /> },
       { path: "admin/courses/:id", element: <AdminCourseProfile /> },
       { path: "admin/registration", element: <AdminRegistration /> },
+      { path: "admin/attendance", element: <AdminAttendance /> },
+      { path: "admin/timetable", element: <AdminTimetable /> },
+      { path: "admin/exams", element: <AdminExams /> },
+      { path: "admin/results", element: <AdminResults /> },
       { path: "teacher", element: <TeacherDashboard /> },
       { path: "staff", element: <StaffDashboard /> },
       { path: "student", element: <StudentDashboard /> },
