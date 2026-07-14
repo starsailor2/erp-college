@@ -112,3 +112,63 @@ export interface ActivityLogEntry {
   category: ActivityCategory;
   status: "completed" | "pending_approval" | "scheduled";
 }
+
+// --- Admin / Academic Operations (Phase 1b) ---
+
+export interface AttendanceRecord {
+  id: string;
+  studentId: string;
+  date: string; // ISO date - "today" for this seed
+  status: "present" | "absent";
+}
+
+export type LeaveStatus = "pending" | "approved" | "rejected";
+export interface LeaveRequest {
+  id: string;
+  studentId: string;
+  fromDate: string; // ISO date
+  toDate: string; // ISO date
+  reason: string;
+  status: LeaveStatus;
+}
+
+export type TimetableSlotType = "class" | "break" | "lunch";
+export interface TimetableEntry {
+  day: string; // "Monday".."Saturday"
+  time: string; // "09:00 - 10:00"
+  type: TimetableSlotType;
+  courseId?: string; // set when type === "class" and tied to a real course
+  facultyId?: string; // set alongside courseId
+  label?: string; // display text for break/lunch rows, or generic (non-course) class slots like "Lab Session" / "Tutorial"
+  room?: string; // only set for user-added entries via the Add Schedule modal
+}
+export interface TimetableClass {
+  id: string; // `${departmentId}-Y${year}`, e.g. "CSE-Y3"
+  departmentId: string;
+  year: 1 | 2 | 3 | 4;
+  entries: TimetableEntry[];
+}
+
+export type ExamType = "written" | "lab" | "online" | "practical";
+export interface Exam {
+  id: string;
+  courseId: string;
+  date: string; // ISO date
+  startTime: string; // "09:00"
+  endTime: string; // "12:00"
+  type: ExamType;
+  venue: string;
+  capacity: number;
+  enrolledCount: number;
+  conflict: boolean;
+  capacityWarning: boolean;
+}
+
+export interface Mark {
+  id: string;
+  studentId: string;
+  courseId: string;
+  marksObtained: number;
+  maxMarks: number;
+  grade: string; // "A+" | "A" | "B" | "C" | "D"
+}
