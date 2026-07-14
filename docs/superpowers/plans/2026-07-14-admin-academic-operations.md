@@ -1240,56 +1240,52 @@ import { getExams } from "@/api/exams";
 
 - [ ] **Step 2: Add exam-count state and fetch it alongside the existing data**
 
+**Amendment (found during execution):** the Find/Replace blocks originally written here quoted the Phase 0 placeholder dashboard's `unread`/`Notification` state shape by mistake — Phase 1a's real `Dashboard.tsx` uses `students`/`faculty`/`activity`/`category` state instead. The corrected blocks below match the actual file.
+
 Find this existing block:
 
 ```tsx
-  const [unread, setUnread] = useState(0);
-  const [rows, setRows] = useState<Notification[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [faculty, setFaculty] = useState<Faculty[]>([]);
+  const [activity, setActivity] = useState<ActivityLogEntry[]>([]);
+  const [category, setCategory] = useState<CategoryFilter>("all");
 
   useEffect(() => {
     let live = true;
-    getUnreadNotificationCount().then((count) => { if (live) setUnread(count); });
-    getNotifications().then((data) => { if (live) setRows(data); });
+    getStudents().then((data) => { if (live) setStudents(data); });
+    getFaculty().then((data) => { if (live) setFaculty(data); });
+    getActivityLog().then((data) => { if (live) setActivity(data); });
     return () => { live = false; };
   }, []);
+
+  const filteredActivity = category === "all" ? activity : activity.filter((a) => a.category === category);
 ```
 
 Replace it with:
 
 ```tsx
-  const [unread, setUnread] = useState(0);
-  const [rows, setRows] = useState<Notification[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [faculty, setFaculty] = useState<Faculty[]>([]);
+  const [activity, setActivity] = useState<ActivityLogEntry[]>([]);
+  const [category, setCategory] = useState<CategoryFilter>("all");
   const [examCount, setExamCount] = useState(0);
 
   useEffect(() => {
     let live = true;
-    getUnreadNotificationCount().then((count) => { if (live) setUnread(count); });
-    getNotifications().then((data) => { if (live) setRows(data); });
+    getStudents().then((data) => { if (live) setStudents(data); });
+    getFaculty().then((data) => { if (live) setFaculty(data); });
+    getActivityLog().then((data) => { if (live) setActivity(data); });
     getExams().then((data) => { if (live) setExamCount(data.length); });
     return () => { live = false; };
   }, []);
-```
 
-- [ ] **Step 3: Add the `avgAttendance` computation**
-
-Find this existing line (immediately before the component's `return`):
-
-```tsx
-  const filteredActivity = category === "all" ? activity : activity.filter((a) => a.category === category);
-
-  return (
-```
-
-Replace it with:
-
-```tsx
   const filteredActivity = category === "all" ? activity : activity.filter((a) => a.category === category);
   const avgAttendance = students.length > 0
     ? Math.round((students.reduce((sum, s) => sum + s.attendancePct, 0) / students.length) * 10) / 10
     : 0;
-
-  return (
 ```
+
+- [ ] **Step 3: (folded into Step 2 above — no separate edit needed)**
 
 - [ ] **Step 4: Use both real values in the KPI cards**
 

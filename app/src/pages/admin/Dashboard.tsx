@@ -20,6 +20,7 @@ import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/ch
 import { getStudents } from "@/api/students";
 import { getFaculty } from "@/api/faculty";
 import { getActivityLog } from "@/api/activityLog";
+import { getExams } from "@/api/exams";
 import { getDepartmentById } from "@/demo-data/academics/departments";
 import type { ActivityLogEntry, Student, Faculty } from "@/types";
 
@@ -38,16 +39,21 @@ export default function Dashboard() {
   const [faculty, setFaculty] = useState<Faculty[]>([]);
   const [activity, setActivity] = useState<ActivityLogEntry[]>([]);
   const [category, setCategory] = useState<CategoryFilter>("all");
+  const [examCount, setExamCount] = useState(0);
 
   useEffect(() => {
     let live = true;
     getStudents().then((data) => { if (live) setStudents(data); });
     getFaculty().then((data) => { if (live) setFaculty(data); });
     getActivityLog().then((data) => { if (live) setActivity(data); });
+    getExams().then((data) => { if (live) setExamCount(data.length); });
     return () => { live = false; };
   }, []);
 
   const filteredActivity = category === "all" ? activity : activity.filter((a) => a.category === category);
+  const avgAttendance = students.length > 0
+    ? Math.round((students.reduce((sum, s) => sum + s.attendancePct, 0) / students.length) * 10) / 10
+    : 0;
 
   return (
     <>
@@ -66,7 +72,7 @@ export default function Dashboard() {
           <StatCard title="Fee Collection" icon={<PaymentIcon />} color={getIconAccent(mode, "fees")} value="₹3.2 Cr" />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Avg Attendance" icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} value="87.3%" />
+          <StatCard title="Avg Attendance" icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} value={`${avgAttendance}%`} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <StatCard title="Total Assets" icon={<InventoryIcon />} color={getIconAccent(mode, "assets")} numericValue={1842} />
@@ -75,7 +81,7 @@ export default function Dashboard() {
           <StatCard title="Hostel Occupancy" icon={<HotelIcon />} color={getIconAccent(mode, "hostel")} numericValue={92} formatValue={(n) => `${n}%`} />
         </Grid>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-          <StatCard title="Upcoming Exams" icon={<GradingIcon />} color={getIconAccent(mode, "exams")} numericValue={24} />
+          <StatCard title="Upcoming Exams" icon={<GradingIcon />} color={getIconAccent(mode, "exams")} numericValue={examCount} />
         </Grid>
       </Grid>
 
