@@ -172,3 +172,37 @@ export interface Mark {
   maxMarks: number;
   grade: string; // "A+" | "A" | "B" | "C" | "D"
 }
+
+// --- Admin / Finance (Phase 1c) ---
+
+export interface FeeStructureItem {
+  id: string; // "FEE-001"
+  program: string; // matches Student.program, e.g. "B.Tech CSE"
+  year: 1 | 2 | 3 | 4;
+  tuitionFee: number;
+  hostelFee: number;
+  transportFee: number;
+  otherCharges: number;
+  total: number; // sum of the 4 fields above
+}
+
+export type FeeLedgerStatus = "paid" | "pending" | "overdue";
+export interface FeeLedgerEntry {
+  id: string;
+  studentId: string;
+  totalFee: number;
+  paidAmount: number;
+  balance: number; // totalFee - paidAmount
+  status: FeeLedgerStatus;
+}
+
+export type PaymentMode = "online" | "cash" | "cheque" | "dd";
+export type PaymentStatus = "verified" | "pending_clearance";
+export interface Payment {
+  id: string; // "REC-2026-1842" style receipt number
+  date: string; // ISO date
+  studentId: string;
+  amount: number;
+  mode: PaymentMode;
+  status: PaymentStatus;
+}
