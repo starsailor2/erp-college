@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
 import { DataTable } from "@/components/DataTable";
 import StatusChip from "@/components/StatusChip";
+import DigitalSignDialog from "@/components/DigitalSignDialog";
 import { useColorMode } from "@/context/ColorModeContext";
 import { getIconAccent } from "@/theme/chartPalette";
 import { getDocumentSignatures, signDocument } from "@/api/documentSignatures";
@@ -27,6 +28,7 @@ export default function DocumentSignatures() {
   const [rows, setRows] = useState<DocumentSignature[]>([]);
   const [tab, setTab] = useState<TabValue>("pending");
   const [snackbar, setSnackbar] = useState<string | null>(null);
+  const [signingDoc, setSigningDoc] = useState<{ id: string; title: string } | null>(null);
 
   const load = () => getDocumentSignatures().then(setRows);
   useEffect(() => { load(); }, []);
@@ -105,7 +107,7 @@ export default function DocumentSignatures() {
             key: "actions", label: "Actions",
             render: (row) => (
               <Stack direction="row" spacing={0.5}>
-                {row.status !== "completed" && <Button size="small" variant="contained" onClick={() => handleSign(row.id)}>Sign</Button>}
+                {row.status !== "completed" && <Button size="small" variant="contained" onClick={() => setSigningDoc({ id: row.id, title: row.title })}>Sign</Button>}
                 {row.status === "completed" && <Button size="small" onClick={() => setSnackbar("Downloading signed document...")}>Download</Button>}
                 <Button size="small" onClick={() => setSnackbar("Loading signature history...")}>History</Button>
               </Stack>
@@ -129,6 +131,15 @@ export default function DocumentSignatures() {
         ))}
       </Grid>
       <Snackbar open={!!snackbar} autoHideDuration={3000} onClose={() => setSnackbar(null)} message={snackbar} />
+      <DigitalSignDialog
+        open={!!signingDoc}
+        documentTitle={signingDoc?.title ?? ""}
+        onClose={() => setSigningDoc(null)}
+        onConfirm={() => {
+          if (signingDoc) handleSign(signingDoc.id);
+          setSigningDoc(null);
+        }}
+      />
     </>
   );
 }
