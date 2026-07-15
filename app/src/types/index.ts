@@ -279,3 +279,110 @@ export interface LibraryTransaction {
   dueDate: string;
   status: LibraryTransactionStatus;
 }
+
+// --- Admin / Communication & System (Phase 1e) ---
+
+export type NoticeStatus = "published" | "scheduled" | "draft";
+export interface Notice {
+  id: string;
+  title: string;
+  status: NoticeStatus;
+  audience: string;
+  author: string;
+  publishedDate: string | null;
+}
+
+export type DocumentSignatureStatus = "pending" | "in_progress" | "completed";
+export type DocumentUrgency = "normal" | "urgent";
+export interface DocumentSignature {
+  id: string;
+  title: string;
+  docType: string;
+  initiatedBy: string;
+  date: string;
+  status: DocumentSignatureStatus;
+  urgency: DocumentUrgency;
+  currentStage?: string;
+  pendingWith?: string;
+  progressCurrent?: number;
+  progressTotal?: number;
+  signaturesCollected?: number;
+  signaturesTotal?: number;
+}
+
+export type AuditStatus = "success" | "failed";
+export interface AuditLogEntry {
+  id: string;
+  timestamp: string;
+  actorEmail: string;
+  action: string;
+  module: string;
+  ipAddress: string;
+  status: AuditStatus;
+}
+
+export interface ServiceStatus {
+  name: string;
+  description: string;
+  status: "running" | "degraded";
+}
+export interface SystemHealthMetrics {
+  uptimePct: number;
+  uptimeDetail: string;
+  cpuPct: number;
+  memoryPct: number;
+  memoryDetail: string;
+  diskPct: number;
+  diskDetail: string;
+  databaseHealthy: boolean;
+  apiResponseMs: number;
+  activeUsers: number;
+  lastBackup: string;
+  services: ServiceStatus[];
+}
+
+export interface SystemConfig {
+  institutionName: string;
+  institutionCode: string;
+  email: string;
+  phone: string;
+  academicYear: string;
+  currentTerm: string;
+  minAttendancePct: number;
+  passingGrade: string;
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  twoFactorAuth: boolean;
+  autoBackup: boolean;
+}
+
+export interface AppSettings {
+  compactView: boolean;
+  animations: boolean;
+  emailNotifications: boolean;
+  smsNotifications: boolean;
+  pushNotifications: boolean;
+  collegeName: string;
+  academicYear: string;
+  semester: string;
+  language: string;
+  timezone: string;
+  dateFormat: string;
+  timeFormat: string;
+  twoFactorAuth: boolean;
+  sessionTimeout: boolean;
+  loginAlerts: boolean;
+  autoBackup: boolean;
+  dataRetention: boolean;
+}
+
+export interface AdminProfile {
+  name: string;
+  email: string;
+  phone: string;
+  role: string;
+  department: string;
+  actionsToday: number;
+  totalActions: number;
+  efficiencyPct: number;
+}
