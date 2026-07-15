@@ -75,6 +75,17 @@ const StaffCompletedTasks = lazy(() => import("@/pages/staff/CompletedTasks"));
 const StaffProfilePage = lazy(() => import("@/pages/staff/Profile"));
 const StaffNotifications = lazy(() => import("@/pages/staff/Notifications"));
 const StudentDashboard = lazy(() => import("@/pages/student/Dashboard"));
+const StudentIdentity = lazy(() => import("@/pages/student/Identity"));
+const StudentMyCourses = lazy(() => import("@/pages/student/MyCourses"));
+const StudentRegistration = lazy(() => import("@/pages/student/Registration"));
+const StudentAttendance = lazy(() => import("@/pages/student/Attendance"));
+const StudentMarks = lazy(() => import("@/pages/student/Marks"));
+const StudentExams = lazy(() => import("@/pages/student/Exams"));
+const StudentAcademicRequests = lazy(() => import("@/pages/student/AcademicRequests"));
+const StudentFeeSummary = lazy(() => import("@/pages/student/FeeSummary"));
+const StudentPayments = lazy(() => import("@/pages/student/Payments"));
+const StudentFeeLedger = lazy(() => import("@/pages/student/FeeLedger"));
+const StudentProfilePage = lazy(() => import("@/pages/student/Profile"));
 
 const PortalSelection = lazy(() => import("@/pages/PortalSelection"));
 const LoginPage = lazy(() => import("@/pages/Login"));
@@ -165,6 +176,17 @@ export const router = createBrowserRouter([
       { path: "staff/profile", element: <StaffProfilePage /> },
       { path: "staff/notifications", element: <StaffNotifications /> },
       { path: "student", element: <StudentDashboard /> },
+      { path: "student/identity", element: <StudentIdentity /> },
+      { path: "student/courses", element: <StudentMyCourses /> },
+      { path: "student/registration", element: <StudentRegistration /> },
+      { path: "student/attendance", element: <StudentAttendance /> },
+      { path: "student/marks", element: <StudentMarks /> },
+      { path: "student/exams", element: <StudentExams /> },
+      { path: "student/requests", element: <StudentAcademicRequests /> },
+      { path: "student/fees/summary", element: <StudentFeeSummary /> },
+      { path: "student/fees/payments", element: <StudentPayments /> },
+      { path: "student/fees/ledger", element: <StudentFeeLedger /> },
+      { path: "student/profile", element: <StudentProfilePage /> },
     ],
   },
 ]);

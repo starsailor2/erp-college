@@ -38,6 +38,8 @@ import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
 import FactCheckIcon from "@mui/icons-material/FactCheck";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import UpdateIcon from "@mui/icons-material/Update";
+import BadgeIcon from "@mui/icons-material/Badge";
+import HowToRegIcon from "@mui/icons-material/HowToReg";
 import type { ReactNode } from "react";
 
 export interface NavItem {
@@ -133,6 +135,19 @@ export function getNavItems(role: Role, teacherRole: TeacherRole = "professor", 
       });
     }
     case "student":
-      return [{ label: "Dashboard", path: "/student", icon: <DashboardIcon /> }];
+      return [
+        { label: "Dashboard", path: "/student", icon: <DashboardIcon /> },
+        { label: "Identity & Records", path: "/student/identity", icon: <BadgeIcon /> },
+        { label: "My Courses", path: "/student/courses", icon: <MenuBookIcon />, group: "Academics" },
+        { label: "Registration", path: "/student/registration", icon: <HowToRegIcon />, group: "Academics" },
+        { label: "Attendance", path: "/student/attendance", icon: <EventNoteIcon />, group: "Academics" },
+        { label: "Internal Marks", path: "/student/marks", icon: <GradingIcon />, group: "Academics" },
+        { label: "Exams & Results", path: "/student/exams", icon: <AssessmentIcon />, group: "Academics" },
+        { label: "Academic Requests", path: "/student/requests", icon: <AssignmentIcon />, group: "Academics" },
+        { label: "Fee Summary", path: "/student/fees/summary", icon: <PaymentIcon />, group: "Finance" },
+        { label: "Payments", path: "/student/fees/payments", icon: <ReceiptIcon />, group: "Finance" },
+        { label: "Fee Ledger", path: "/student/fees/ledger", icon: <AccountBalanceWalletIcon />, group: "Finance" },
+        { label: "My Profile", path: "/student/profile", icon: <AccountCircleIcon />, group: "_bottom" },
+      ];
   }
 }
