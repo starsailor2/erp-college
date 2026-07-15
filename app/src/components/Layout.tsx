@@ -21,6 +21,8 @@ import { getStaffDisplayIdentity } from "@/api/staffProfile";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/api/notifications";
 import { getSidebarTokens } from "@/theme/tokens";
+import CommandCenterDialog from "@/command-center/CommandCenterDialog";
+import { useCommandCenterHotkey } from "@/command-center/useCommandCenterHotkey";
 
 const SIDEBAR_WIDTH = 260;
 const SIDEBAR_TRANSITION_DURATION = 0.3;
@@ -36,6 +38,8 @@ export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { role, user, logout } = useAuth();
   const { toggleColorMode, mode } = useColorMode();
+  const [commandCenterOpen, setCommandCenterOpen] = useState(false);
+  useCommandCenterHotkey(() => { if (role === "admin") setCommandCenterOpen(true); });
   const { role: teacherRole, setRole: setTeacherRole } = useTeacherRoleState();
   const { role: staffRole, setRole: setStaffRole } = useStaffRoleState();
   const sidebarTokens = getSidebarTokens(mode);
@@ -332,6 +336,9 @@ export default function Layout() {
           </Suspense>
         </Box>
       </Box>
+      {role === "admin" && (
+        <CommandCenterDialog open={commandCenterOpen} onClose={() => setCommandCenterOpen(false)} />
+      )}
     </Box>
     </StaffRoleContext.Provider>
     </TeacherRoleContext.Provider>
