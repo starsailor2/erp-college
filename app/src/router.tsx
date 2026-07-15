@@ -28,6 +28,13 @@ const AdminLibrary = lazy(() => import("@/pages/admin/Library"));
 const AdminFeeStructure = lazy(() => import("@/pages/admin/FeeStructure"));
 const AdminFeeLedger = lazy(() => import("@/pages/admin/FeeLedger"));
 const AdminPayments = lazy(() => import("@/pages/admin/Payments"));
+const AdminNotices = lazy(() => import("@/pages/admin/Notices"));
+const AdminDocumentSignatures = lazy(() => import("@/pages/admin/DocumentSignatures"));
+const AdminAuditLogs = lazy(() => import("@/pages/admin/AuditLogs"));
+const AdminSystemHealth = lazy(() => import("@/pages/admin/SystemHealth"));
+const AdminConfigurations = lazy(() => import("@/pages/admin/Configurations"));
+const AdminProfilePage = lazy(() => import("@/pages/admin/Profile"));
+const AdminSettings = lazy(() => import("@/pages/admin/Settings"));
 const TeacherDashboard = lazy(() => import("@/pages/teacher/Dashboard"));
 const StaffDashboard = lazy(() => import("@/pages/staff/Dashboard"));
 const StudentDashboard = lazy(() => import("@/pages/student/Dashboard"));
@@ -71,6 +78,13 @@ export const router = createBrowserRouter([
       { path: "admin/fees/structure", element: <AdminFeeStructure /> },
       { path: "admin/fees/ledger", element: <AdminFeeLedger /> },
       { path: "admin/fees/payments", element: <AdminPayments /> },
+      { path: "admin/notices", element: <AdminNotices /> },
+      { path: "admin/documents", element: <AdminDocumentSignatures /> },
+      { path: "admin/audit-logs", element: <AdminAuditLogs /> },
+      { path: "admin/system-health", element: <AdminSystemHealth /> },
+      { path: "admin/configurations", element: <AdminConfigurations /> },
+      { path: "admin/profile", element: <AdminProfilePage /> },
+      { path: "admin/settings", element: <AdminSettings /> },
       { path: "teacher", element: <TeacherDashboard /> },
       { path: "staff", element: <StaffDashboard /> },
       { path: "student", element: <StudentDashboard /> },

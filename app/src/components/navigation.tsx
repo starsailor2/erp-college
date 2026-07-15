@@ -18,6 +18,13 @@ import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import PaymentIcon from "@mui/icons-material/Payment";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import ReceiptIcon from "@mui/icons-material/Receipt";
+import CampaignIcon from "@mui/icons-material/Campaign";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import ManageSearchIcon from "@mui/icons-material/ManageSearch";
+import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
+import TuneIcon from "@mui/icons-material/Tune";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SettingsIcon from "@mui/icons-material/Settings";
 import type { ReactNode } from "react";
 
 export interface NavItem {
@@ -50,6 +57,13 @@ export function getNavItems(role: Role): NavItem[] {
         { label: "Fee Structure", path: "/admin/fees/structure", icon: <PaymentIcon />, group: "Finance" },
         { label: "Student Fee Ledger", path: "/admin/fees/ledger", icon: <AccountBalanceWalletIcon />, group: "Finance" },
         { label: "Payments & Waivers", path: "/admin/fees/payments", icon: <ReceiptIcon />, group: "Finance" },
+        { label: "Notices & Announcements", path: "/admin/notices", icon: <CampaignIcon />, group: "Communication" },
+        { label: "Document Signatures", path: "/admin/documents", icon: <HistoryEduIcon />, group: "Communication" },
+        { label: "Audit Logs", path: "/admin/audit-logs", icon: <ManageSearchIcon />, group: "System" },
+        { label: "System Health", path: "/admin/system-health", icon: <MonitorHeartIcon />, group: "System" },
+        { label: "Configurations", path: "/admin/configurations", icon: <TuneIcon />, group: "System" },
+        { label: "My Profile", path: "/admin/profile", icon: <AccountCircleIcon />, group: "System" },
+        { label: "Settings", path: "/admin/settings", icon: <SettingsIcon />, group: "System" },
         { label: "Users", path: "/admin/users", icon: <PeopleIcon />, group: "Administration" },
       ];
     case "teacher":
