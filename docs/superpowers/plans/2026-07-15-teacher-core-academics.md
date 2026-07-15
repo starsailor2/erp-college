@@ -62,7 +62,7 @@ export interface MarksSubmission {
 }
 
 export type TeacherRequestStatus = "pending_approval" | "approved" | "rejected" | "escalated";
-export interface LeaveRequest {
+export interface TeacherLeaveRequest {
   id: string;
   leaveType: string;
   fromDate: string;
@@ -477,14 +477,14 @@ git commit -m "Add teacher marks demo data and API"
 - [ ] **Step 1: Create `src/demo-data/teacher/requests.ts`**
 
 ```ts
-import type { LeaveRequest, GradeChangeRequest, ResourceRequest } from "@/types";
+import type { TeacherLeaveRequest, GradeChangeRequest, ResourceRequest } from "@/types";
 import { students } from "@/demo-data/people/students";
 
 function dateStr(month: number, day: number): string {
   return `2026-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 }
 
-export const leaveRequests: LeaveRequest[] = [
+export const leaveRequests: TeacherLeaveRequest[] = [
   { id: "LV-001", leaveType: "Casual", fromDate: dateStr(3, 10), toDate: dateStr(3, 12), reason: "Family function", coverageArrangements: "Dr. Nair to cover CS201", hodStatus: "approved", deanStatus: "approved", raisedOn: dateStr(3, 5) },
   { id: "LV-002", leaveType: "Medical", fromDate: dateStr(4, 2), toDate: dateStr(4, 6), reason: "Medical procedure", coverageArrangements: "Dept to reassign labs", hodStatus: "approved", deanStatus: null, raisedOn: dateStr(3, 28) },
   { id: "LV-003", leaveType: "Academic", fromDate: dateStr(5, 15), toDate: dateStr(5, 17), reason: "Conference attendance", coverageArrangements: "Self-study assigned", hodStatus: "escalated", deanStatus: "pending_approval", raisedOn: dateStr(5, 1) },
@@ -511,13 +511,13 @@ export function nextRequestId(prefix: string, list: { id: string }[]): string {
 ```ts
 import { simulateRequest } from "@/api/http";
 import { leaveRequests, gradeChangeRequests, resourceRequests, nextRequestId } from "@/demo-data/teacher/requests";
-import type { LeaveRequest, GradeChangeRequest, ResourceRequest } from "@/types";
+import type { TeacherLeaveRequest, GradeChangeRequest, ResourceRequest } from "@/types";
 
-export function getLeaveRequests(): Promise<LeaveRequest[]> {
+export function getLeaveRequests(): Promise<TeacherLeaveRequest[]> {
   return simulateRequest(leaveRequests);
 }
-export function addLeaveRequest(entry: Omit<LeaveRequest, "id" | "hodStatus" | "deanStatus" | "raisedOn">): Promise<LeaveRequest> {
-  const full: LeaveRequest = { ...entry, id: nextRequestId("LV", leaveRequests), hodStatus: "pending_approval", deanStatus: null, raisedOn: new Date().toISOString().slice(0, 10) };
+export function addLeaveRequest(entry: Omit<TeacherLeaveRequest, "id" | "hodStatus" | "deanStatus" | "raisedOn">): Promise<TeacherLeaveRequest> {
+  const full: TeacherLeaveRequest = { ...entry, id: nextRequestId("LV", leaveRequests), hodStatus: "pending_approval", deanStatus: null, raisedOn: new Date().toISOString().slice(0, 10) };
   leaveRequests.unshift(full);
   return simulateRequest(full);
 }
@@ -1982,13 +1982,13 @@ import { PageHeader } from "@/components/PageHeader";
 import { DataTable } from "@/components/DataTable";
 import StatusChip from "@/components/StatusChip";
 import { getLeaveRequests, addLeaveRequest } from "@/api/teacherRequests";
-import type { LeaveRequest } from "@/types";
+import type { TeacherLeaveRequest } from "@/types";
 
 const leaveTypes = ["Casual", "Medical", "Earned", "Academic"];
 const emptyForm = { leaveType: leaveTypes[0], fromDate: "", toDate: "", reason: "", coverageArrangements: "" };
 
 export default function LeaveRequests() {
-  const [rows, setRows] = useState<LeaveRequest[]>([]);
+  const [rows, setRows] = useState<TeacherLeaveRequest[]>([]);
   const [form, setForm] = useState(emptyForm);
   const [snackbar, setSnackbar] = useState<string | null>(null);
 
@@ -2036,7 +2036,7 @@ export default function LeaveRequests() {
       </Paper>
 
       <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 1.5 }}>Request History</Typography>
-      <DataTable<LeaveRequest>
+      <DataTable<TeacherLeaveRequest>
         pagination
         columns={[
           { key: "leaveType", label: "Type" },
