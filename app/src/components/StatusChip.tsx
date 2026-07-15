@@ -75,6 +75,12 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   degraded: { label: "Degraded", color: statusTokens.warning, icon: WarningAmberIcon },
   // Teacher requests
   escalated: { label: "Escalated", color: statusTokens.serious, icon: PendingActionsIcon },
+  // Course coverage
+  covered: { label: "Covered", color: statusTokens.good, icon: CheckCircleIcon },
+  gap: { label: "Gap", color: statusTokens.critical, icon: ErrorIcon },
+  // Workload
+  normal: { label: "Normal", color: statusTokens.good, icon: CheckCircleIcon },
+  overloaded: { label: "Overloaded", color: statusTokens.critical, icon: WarningAmberIcon },
 };
 
 interface StatusChipProps {
