@@ -8,6 +8,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
 import { DataTable } from "@/components/DataTable";
 import StatusChip from "@/components/StatusChip";
+import DigitalSignDialog from "@/components/DigitalSignDialog";
 import { useColorMode } from "@/context/ColorModeContext";
 import { getIconAccent } from "@/theme/chartPalette";
 import { getTeacherDocuments, signTeacherDocument } from "@/api/teacherDocuments";
@@ -20,6 +21,7 @@ export default function DocumentSignatures() {
   const [rows, setRows] = useState<TeacherDocument[]>([]);
   const [tab, setTab] = useState<Tab>("assigned");
   const [snackbar, setSnackbar] = useState<string | null>(null);
+  const [signingDoc, setSigningDoc] = useState<{ id: string; title: string } | null>(null);
 
   const load = () => getTeacherDocuments().then(setRows);
   useEffect(() => { load(); }, []);
@@ -71,7 +73,7 @@ export default function DocumentSignatures() {
           {
             key: "actions", label: "Action",
             render: (row) => row.direction === "assigned_to_me" && row.status === "pending"
-              ? <Button size="small" variant="contained" onClick={() => handleSign(row.id)}>Review & Sign</Button>
+              ? <Button size="small" variant="contained" onClick={() => setSigningDoc({ id: row.id, title: row.title })}>Review & Sign</Button>
               : <Button size="small" onClick={() => setSnackbar("Loading signature history...")}>History</Button>,
           },
         ]}
@@ -79,6 +81,15 @@ export default function DocumentSignatures() {
         emptyTitle="No documents found"
       />
       <Snackbar open={!!snackbar} autoHideDuration={3000} onClose={() => setSnackbar(null)} message={snackbar} />
+      <DigitalSignDialog
+        open={!!signingDoc}
+        documentTitle={signingDoc?.title ?? ""}
+        onClose={() => setSigningDoc(null)}
+        onConfirm={() => {
+          if (signingDoc) handleSign(signingDoc.id);
+          setSigningDoc(null);
+        }}
+      />
     </>
   );
 }
