@@ -73,6 +73,8 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   failed: { label: "Failed", color: statusTokens.critical, icon: CancelIcon },
   running: { label: "Running", color: statusTokens.good, icon: CheckCircleIcon },
   degraded: { label: "Degraded", color: statusTokens.warning, icon: WarningAmberIcon },
+  // Teacher requests
+  escalated: { label: "Escalated", color: statusTokens.serious, icon: PendingActionsIcon },
 };
 
 interface StatusChipProps {
