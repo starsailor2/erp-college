@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField,
   MenuItem, Select, InputLabel, FormControl, Stack, Typography, Grid, Snackbar,
@@ -10,12 +10,15 @@ import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import EventBusyIcon from "@mui/icons-material/EventBusy";
 import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
+import { DataTable } from "@/components/DataTable";
+import StatusChip from "@/components/StatusChip";
 import { useColorMode } from "@/context/ColorModeContext";
 import { getIconAccent } from "@/theme/chartPalette";
-import { getAttendanceStats } from "@/api/attendance";
+import { getAttendanceStats, getTodayAttendance, markAttendance } from "@/api/attendance";
 import { getPendingLeaveCount } from "@/api/leaveRequests";
 import { students } from "@/demo-data/people/students";
 import { courses } from "@/demo-data/academics/courses";
+import type { AttendanceRecord } from "@/types";
 
 const emptyForm = { courseId: courses[0]?.id ?? "", date: "2026-07-14", session: "Morning (9:00 AM - 12:00 PM)" };
 
@@ -23,14 +26,20 @@ export default function Attendance() {
   const { mode } = useColorMode();
   const [stats, setStats] = useState({ present: 0, total: 0, pct: 0 });
   const [pendingLeave, setPendingLeave] = useState(0);
+  const [records, setRecords] = useState<AttendanceRecord[]>([]);
+  const [statusFilter, setStatusFilter] = useState<"all" | "present" | "absent">("all");
+  const [search, setSearch] = useState("");
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [snackbar, setSnackbar] = useState<string | null>(null);
+
+  const loadRecords = () => getTodayAttendance().then(setRecords);
 
   useEffect(() => {
     let live = true;
     getAttendanceStats().then((data) => { if (live) setStats(data); });
     getPendingLeaveCount().then((count) => { if (live) setPendingLeave(count); });
+    loadRecords();
     return () => { live = false; };
   }, []);
 
@@ -38,6 +47,21 @@ export default function Attendance() {
     ? Math.round((students.reduce((sum, s) => sum + s.attendancePct, 0) / students.length) * 10) / 10
     : 0;
   const lowAttendanceCount = students.filter((s) => s.attendancePct < 75).length;
+
+  const rows = useMemo(() => records
+    .map((r) => ({ ...r, student: students.find((s) => s.id === r.studentId) }))
+    .filter((r) => r.student)
+    .filter((r) => statusFilter === "all" || r.status === statusFilter)
+    .filter((r) => search === "" || r.student!.name.toLowerCase().includes(search.toLowerCase()) || r.student!.rollNo.toLowerCase().includes(search.toLowerCase())),
+    [records, statusFilter, search]);
+
+  const handleToggle = (studentId: string, current: "present" | "absent") => {
+    const next = current === "present" ? "absent" : "present";
+    markAttendance(studentId, next).then(() => {
+      loadRecords();
+      getAttendanceStats().then(setStats);
+    });
+  };
 
   return (
     <>
@@ -72,6 +96,40 @@ export default function Attendance() {
         </Grid>
       </Grid>
 
+      <Typography variant="subtitle1" fontWeight={600} sx={{ mt: 3.5, mb: 1.5 }}>Today's Attendance</Typography>
+      <Stack direction="row" spacing={1.5} sx={{ mb: 2 }} flexWrap="wrap" useFlexGap>
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Status</InputLabel>
+          <Select label="Status" value={statusFilter} onChange={(e: SelectChangeEvent) => setStatusFilter(e.target.value as "all" | "present" | "absent")}>
+            <MenuItem value="all">All Statuses</MenuItem>
+            <MenuItem value="present">Present</MenuItem>
+            <MenuItem value="absent">Absent</MenuItem>
+          </Select>
+        </FormControl>
+        <TextField size="small" placeholder="Search students..." value={search} onChange={(e) => setSearch(e.target.value)} sx={{ minWidth: 220 }} />
+      </Stack>
+
+      <DataTable
+        pagination
+        columns={[
+          { key: "rollNo", label: "Roll No", render: (row) => row.student!.rollNo },
+          { key: "name", label: "Student Name", render: (row) => row.student!.name },
+          { key: "program", label: "Program", render: (row) => row.student!.program },
+          { key: "status", label: "Today's Status", render: (row) => <StatusChip status={row.status} /> },
+          { key: "attendancePct", label: "Overall %", render: (row) => `${row.student!.attendancePct}%` },
+          {
+            key: "actions", label: "Action",
+            render: (row) => (
+              <Button size="small" onClick={() => handleToggle(row.studentId, row.status)}>
+                {row.status === "present" ? "Mark Absent" : "Mark Present"}
+              </Button>
+            ),
+          },
+        ]}
+        rows={rows}
+        emptyTitle="No attendance records found"
+      />
+
       <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="sm" fullWidth>
         <DialogTitle>Mark Attendance</DialogTitle>
         <DialogContent sx={{ display: "flex", flexDirection: "column", gap: 2, pt: 1 }}>
@@ -92,7 +150,7 @@ export default function Attendance() {
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-          <Button variant="contained" onClick={() => { setDialogOpen(false); setSnackbar("Opening attendance sheet..."); }}>Continue</Button>
+          <Button variant="contained" onClick={() => { setDialogOpen(false); setSnackbar(`Showing today's attendance sheet for ${courses.find((c) => c.id === form.courseId)?.name ?? "the selected course"}`); }}>Continue</Button>
         </DialogActions>
       </Dialog>
       <Snackbar open={!!snackbar} autoHideDuration={3000} onClose={() => setSnackbar(null)} message={snackbar} />
