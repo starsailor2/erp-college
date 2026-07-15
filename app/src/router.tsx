@@ -86,6 +86,14 @@ const StudentFeeSummary = lazy(() => import("@/pages/student/FeeSummary"));
 const StudentPayments = lazy(() => import("@/pages/student/Payments"));
 const StudentFeeLedger = lazy(() => import("@/pages/student/FeeLedger"));
 const StudentProfilePage = lazy(() => import("@/pages/student/Profile"));
+const StudentConvocation = lazy(() => import("@/pages/student/Convocation"));
+const StudentFellowship = lazy(() => import("@/pages/student/Fellowship"));
+const StudentPlacements = lazy(() => import("@/pages/student/Placements"));
+const StudentHostel = lazy(() => import("@/pages/student/Hostel"));
+const StudentResources = lazy(() => import("@/pages/student/Resources"));
+const StudentReports = lazy(() => import("@/pages/student/Reports"));
+const StudentNotices = lazy(() => import("@/pages/student/Notices"));
+const StudentMessages = lazy(() => import("@/pages/student/Messages"));
 
 const PortalSelection = lazy(() => import("@/pages/PortalSelection"));
 const LoginPage = lazy(() => import("@/pages/Login"));
@@ -187,6 +195,14 @@ export const router = createBrowserRouter([
       { path: "student/fees/payments", element: <StudentPayments /> },
       { path: "student/fees/ledger", element: <StudentFeeLedger /> },
       { path: "student/profile", element: <StudentProfilePage /> },
+      { path: "student/convocation", element: <StudentConvocation /> },
+      { path: "student/fellowship", element: <StudentFellowship /> },
+      { path: "student/placements", element: <StudentPlacements /> },
+      { path: "student/hostel", element: <StudentHostel /> },
+      { path: "student/resources", element: <StudentResources /> },
+      { path: "student/reports", element: <StudentReports /> },
+      { path: "student/notices", element: <StudentNotices /> },
+      { path: "student/messages", element: <StudentMessages /> },
     ],
   },
 ]);

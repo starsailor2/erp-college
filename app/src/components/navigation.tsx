@@ -40,6 +40,7 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import UpdateIcon from "@mui/icons-material/Update";
 import BadgeIcon from "@mui/icons-material/Badge";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
+import WorkIcon from "@mui/icons-material/Work";
 import type { ReactNode } from "react";
 
 export interface NavItem {
@@ -147,6 +148,14 @@ export function getNavItems(role: Role, teacherRole: TeacherRole = "professor", 
         { label: "Fee Summary", path: "/student/fees/summary", icon: <PaymentIcon />, group: "Finance" },
         { label: "Payments", path: "/student/fees/payments", icon: <ReceiptIcon />, group: "Finance" },
         { label: "Fee Ledger", path: "/student/fees/ledger", icon: <AccountBalanceWalletIcon />, group: "Finance" },
+        { label: "Convocation", path: "/student/convocation", icon: <SchoolIcon /> },
+        { label: "Fellowship", path: "/student/fellowship", icon: <PaymentIcon /> },
+        { label: "Placements", path: "/student/placements", icon: <WorkIcon /> },
+        { label: "Hostel & Mess", path: "/student/hostel", icon: <HotelIcon /> },
+        { label: "Facility & Resource Booking", path: "/student/resources", icon: <EventIcon /> },
+        { label: "Reports", path: "/student/reports", icon: <BarChartIcon /> },
+        { label: "Notices", path: "/student/notices", icon: <CampaignIcon />, group: "Communication" },
+        { label: "Messages", path: "/student/messages", icon: <ChatIcon />, group: "Communication" },
         { label: "My Profile", path: "/student/profile", icon: <AccountCircleIcon />, group: "_bottom" },
       ];
   }
