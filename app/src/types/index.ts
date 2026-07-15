@@ -504,4 +504,105 @@ export interface DepartmentSummary {
   avgMarksPct: number;
   yearBreakdown: { year: number; students: number; avgMarksPct: number }[];
   topPerformers: { rollNo: string; name: string; avgMarksPct: number }[];
+  completionPct?: number;
+}
+
+// --- Teacher / HOD, Dean, Profile, Role-Switcher (Phase 2b) ---
+
+export interface FacultyRosterEntry {
+  id: string;
+  name: string;
+  designation: string;
+  courseCount: number;
+  studentCount: number;
+  avgLoad: string;
+  status: "active" | "on_leave";
+}
+
+export interface CourseCoverageEntry {
+  course: string;
+  facultyName: string;
+  section: string;
+  students: number;
+  semester: string;
+  status: "covered" | "gap";
+}
+
+export type ApprovalStatus = "pending" | "approved" | "rejected";
+
+export interface AttendanceApprovalEntry {
+  id: string;
+  course: string;
+  facultyName: string;
+  date: string;
+  section: string;
+  students: number;
+  submitted: string;
+  status: ApprovalStatus;
+}
+
+export interface MarksApprovalEntry {
+  id: string;
+  course: string;
+  facultyName: string;
+  assessment: string;
+  maxMarks: number;
+  submittedOn: string;
+  status: ApprovalStatus;
+}
+
+export interface WorkloadEntry {
+  facultyName: string;
+  designation: string;
+  courses: number;
+  students: number;
+  hrsPerWeek: number;
+  loadPct: number;
+  status: "normal" | "overloaded";
+}
+
+export interface StudentIssue {
+  id: string;
+  rollNo: string;
+  name: string;
+  issue: string;
+  detail: string;
+  raisedBy: string;
+  date: string;
+  priority: "normal" | "high" | "urgent";
+  status: "open" | "resolved";
+}
+
+export interface CalendarEvent {
+  id: string;
+  event: string;
+  startDate: string;
+  endDate: string;
+  status: "upcoming" | "active" | "closed";
+}
+
+export interface AcademicPolicy {
+  name: string;
+  description: string;
+}
+
+export interface ReportRow {
+  department: string;
+  avgAttendancePct: number;
+  avgMarksPct: number;
+  passRatePct: number;
+  atRiskPct: number;
+  facultyUtilizationPct: number;
+}
+
+export interface TeacherProfile {
+  name: string;
+  facultyId: string;
+  email: string;
+  phone: string;
+  office: string;
+  dateOfJoining: string;
+  qualifications: string[];
+  specializations: string[];
+  yearsExperience: number;
 }
