@@ -86,6 +86,11 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   // Semester results
   pass: { label: "Pass", color: statusTokens.good, icon: CheckCircleIcon },
   fail: { label: "Fail", color: statusTokens.critical, icon: CancelIcon },
+  // Placements
+  shortlisted: { label: "Shortlisted", color: statusTokens.warning, icon: HourglassTopIcon },
+  selected: { label: "Selected", color: statusTokens.good, icon: CheckCircleIcon },
+  // Resource bookings
+  confirmed: { label: "Confirmed", color: statusTokens.good, icon: CheckCircleIcon },
 };
 
 interface StatusChipProps {
