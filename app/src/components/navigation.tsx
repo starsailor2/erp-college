@@ -25,6 +25,13 @@ import MonitorHeartIcon from "@mui/icons-material/MonitorHeart";
 import TuneIcon from "@mui/icons-material/Tune";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import SettingsIcon from "@mui/icons-material/Settings";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import PublicIcon from "@mui/icons-material/Public";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import EventBusyIcon from "@mui/icons-material/EventBusy";
+import RuleIcon from "@mui/icons-material/Rule";
+import Inventory2Icon from "@mui/icons-material/Inventory2";
+import ChatIcon from "@mui/icons-material/Chat";
 import type { ReactNode } from "react";
 
 export interface NavItem {
@@ -67,7 +74,24 @@ export function getNavItems(role: Role): NavItem[] {
         { label: "Users", path: "/admin/users", icon: <PeopleIcon />, group: "Administration" },
       ];
     case "teacher":
-      return [{ label: "Dashboard", path: "/teacher", icon: <DashboardIcon /> }];
+      return [
+        { label: "Dashboard", path: "/teacher", icon: <DashboardIcon /> },
+        { label: "My Courses", path: "/teacher/courses", icon: <MenuBookIcon />, group: "Academics" },
+        { label: "Attendance", path: "/teacher/attendance", icon: <EventNoteIcon />, group: "Academics" },
+        { label: "Internal Marks", path: "/teacher/marks", icon: <GradingIcon />, group: "Academics" },
+        { label: "Exams", path: "/teacher/exams", icon: <AssessmentIcon />, group: "Academics" },
+        { label: "Course Materials", path: "/teacher/materials", icon: <UploadFileIcon />, group: "Academics" },
+        { label: "My Course Students", path: "/teacher/students", icon: <GroupsIcon />, group: "Students" },
+        { label: "Department Students", path: "/teacher/dept-students", icon: <AccountBalanceIcon />, group: "Students" },
+        { label: "Academic Cohort", path: "/teacher/cohort", icon: <PublicIcon />, group: "Students" },
+        { label: "Student Performance", path: "/teacher/performance", icon: <TrendingUpIcon />, group: "Students" },
+        { label: "Leave Requests", path: "/teacher/leave", icon: <EventBusyIcon />, group: "Requests" },
+        { label: "Grade Change Requests", path: "/teacher/grade-change", icon: <RuleIcon />, group: "Requests" },
+        { label: "Resource Requests", path: "/teacher/resources", icon: <Inventory2Icon />, group: "Requests" },
+        { label: "Notices", path: "/teacher/notices", icon: <CampaignIcon />, group: "Communication" },
+        { label: "Messages", path: "/teacher/messages", icon: <ChatIcon />, group: "Communication" },
+        { label: "Document Signatures", path: "/teacher/documents", icon: <HistoryEduIcon />, group: "Communication" },
+      ];
     case "staff":
       return [{ label: "Dashboard", path: "/staff", icon: <DashboardIcon /> }];
     case "student":

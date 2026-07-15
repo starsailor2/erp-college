@@ -36,6 +36,21 @@ const AdminConfigurations = lazy(() => import("@/pages/admin/Configurations"));
 const AdminProfilePage = lazy(() => import("@/pages/admin/Profile"));
 const AdminSettings = lazy(() => import("@/pages/admin/Settings"));
 const TeacherDashboard = lazy(() => import("@/pages/teacher/Dashboard"));
+const TeacherMyCourses = lazy(() => import("@/pages/teacher/MyCourses"));
+const TeacherAttendance = lazy(() => import("@/pages/teacher/Attendance"));
+const TeacherInternalMarks = lazy(() => import("@/pages/teacher/InternalMarks"));
+const TeacherExams = lazy(() => import("@/pages/teacher/Exams"));
+const TeacherCourseMaterials = lazy(() => import("@/pages/teacher/CourseMaterials"));
+const TeacherMyCourseStudents = lazy(() => import("@/pages/teacher/MyCourseStudents"));
+const TeacherDepartmentStudents = lazy(() => import("@/pages/teacher/DepartmentStudents"));
+const TeacherAcademicCohort = lazy(() => import("@/pages/teacher/AcademicCohort"));
+const TeacherStudentPerformance = lazy(() => import("@/pages/teacher/StudentPerformance"));
+const TeacherLeaveRequests = lazy(() => import("@/pages/teacher/LeaveRequests"));
+const TeacherGradeChangeRequests = lazy(() => import("@/pages/teacher/GradeChangeRequests"));
+const TeacherResourceRequests = lazy(() => import("@/pages/teacher/ResourceRequests"));
+const TeacherNotices = lazy(() => import("@/pages/teacher/Notices"));
+const TeacherMessages = lazy(() => import("@/pages/teacher/Messages"));
+const TeacherDocumentSignatures = lazy(() => import("@/pages/teacher/DocumentSignatures"));
 const StaffDashboard = lazy(() => import("@/pages/staff/Dashboard"));
 const StudentDashboard = lazy(() => import("@/pages/student/Dashboard"));
 
@@ -86,6 +101,21 @@ export const router = createBrowserRouter([
       { path: "admin/profile", element: <AdminProfilePage /> },
       { path: "admin/settings", element: <AdminSettings /> },
       { path: "teacher", element: <TeacherDashboard /> },
+      { path: "teacher/courses", element: <TeacherMyCourses /> },
+      { path: "teacher/attendance", element: <TeacherAttendance /> },
+      { path: "teacher/marks", element: <TeacherInternalMarks /> },
+      { path: "teacher/exams", element: <TeacherExams /> },
+      { path: "teacher/materials", element: <TeacherCourseMaterials /> },
+      { path: "teacher/students", element: <TeacherMyCourseStudents /> },
+      { path: "teacher/dept-students", element: <TeacherDepartmentStudents /> },
+      { path: "teacher/cohort", element: <TeacherAcademicCohort /> },
+      { path: "teacher/performance", element: <TeacherStudentPerformance /> },
+      { path: "teacher/leave", element: <TeacherLeaveRequests /> },
+      { path: "teacher/grade-change", element: <TeacherGradeChangeRequests /> },
+      { path: "teacher/resources", element: <TeacherResourceRequests /> },
+      { path: "teacher/notices", element: <TeacherNotices /> },
+      { path: "teacher/messages", element: <TeacherMessages /> },
+      { path: "teacher/documents", element: <TeacherDocumentSignatures /> },
       { path: "staff", element: <StaffDashboard /> },
       { path: "student", element: <StudentDashboard /> },
     ],
