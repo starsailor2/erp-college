@@ -63,6 +63,16 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   // Library
   available: { label: "Available", color: statusTokens.good, icon: CheckCircleIcon },
   reserved: { label: "Reserved", color: statusTokens.warning, icon: BookmarkIcon },
+  // Notices
+  published: { label: "Published", color: statusTokens.good, icon: CheckCircleIcon },
+  // Document signatures
+  awaiting: { label: "Awaiting", color: statusTokens.warning, icon: HourglassTopIcon },
+  urgent: { label: "Urgent", color: statusTokens.critical, icon: ErrorIcon },
+  // Audit / system
+  success: { label: "Success", color: statusTokens.good, icon: CheckCircleIcon },
+  failed: { label: "Failed", color: statusTokens.critical, icon: CancelIcon },
+  running: { label: "Running", color: statusTokens.good, icon: CheckCircleIcon },
+  degraded: { label: "Degraded", color: statusTokens.warning, icon: WarningAmberIcon },
 };
 
 interface StatusChipProps {
