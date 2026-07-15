@@ -116,12 +116,21 @@ aren't repeated here.
   `actorEmail === currentAdminEmail`; Audit Logs shows all of them.
   This mirrors Phase 1c's Fee Ledger precedent of not entangling a new
   screen's data with an already-shipped, already-verified type.
-- **Notices, Configurations, Profile, and Settings all get real
-  Add/Edit/Save behavior** where the source has real forms — Notices'
-  Create/Edit dialog persists a new/updated `Notice`; Configurations'
-  and Settings' Save Changes persist their respective singleton config
-  objects (Reset restores the original seed values); Profile's Save
-  Changes persists Name/Email/Phone to the current-admin record.
+- **Notices' Create/Edit/Delete/View/History stay stub notifications**
+  — unlike Assets/Fee Structure/etc., the source never built a real
+  modal anywhere for any Notices action (`onclick` handlers are all
+  bare `showNotification(...)` calls), so there's no real form to
+  adapt. Same reasoning already applied to Payments' "Record Payment"
+  in Phase 1c: no real flow exists in the source to rebuild, so adding
+  one would be new content, not a port. Notices' Audience and Month
+  filters plus search are still made real and functional, since a real
+  underlying dataset exists to filter.
+- **Configurations, Profile, and Settings all get real Save behavior**,
+  since each has a real form with real fields in the source —
+  Configurations' and Settings' Save Changes persist their respective
+  singleton config objects (Reset restores the original seed values);
+  Profile's Save Changes persists Name/Email/Phone to the
+  current-admin record.
 - **Settings' Dark Mode toggle wires into the real `useColorMode`
   context** instead of being a decorative switch with no effect — the
   app already has genuine light/dark mode infrastructure from Phase 0,
@@ -323,8 +332,8 @@ existing `simulateRequest`-based API pattern.
 
 Same as prior phases: `tsc -b` via `npm run build`, `eslint .`, and a
 browser-driven pass confirming: Notices' Audience/Month filters +
-search actually filter and Create/Edit/Delete persist real changes;
-Document Signatures' 4 KPIs are real, tab switching actually changes
+search actually filter (Create/Edit/Delete/View/History remain stub
+snackbars, matching the source); Document Signatures' 4 KPIs are real, tab switching actually changes
 the visible rows, and Sign actually advances a document's status;
 Audit Logs' 3 filters + search actually filter; System Health renders
 its static KPIs and service list; Configurations' Save Changes
