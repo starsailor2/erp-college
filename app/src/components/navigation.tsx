@@ -1,4 +1,4 @@
-import type { Role } from "@/types";
+import type { Role, TeacherRole } from "@/types";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
@@ -32,6 +32,7 @@ import EventBusyIcon from "@mui/icons-material/EventBusy";
 import RuleIcon from "@mui/icons-material/Rule";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import ChatIcon from "@mui/icons-material/Chat";
+import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import type { ReactNode } from "react";
 
 export interface NavItem {
@@ -42,7 +43,7 @@ export interface NavItem {
   children?: { label: string; path: string }[];
 }
 
-export function getNavItems(role: Role): NavItem[] {
+export function getNavItems(role: Role, teacherRole: TeacherRole = "professor"): NavItem[] {
   switch (role) {
     case "admin":
       return [
@@ -73,8 +74,8 @@ export function getNavItems(role: Role): NavItem[] {
         { label: "Settings", path: "/admin/settings", icon: <SettingsIcon />, group: "System" },
         { label: "Users", path: "/admin/users", icon: <PeopleIcon />, group: "Administration" },
       ];
-    case "teacher":
-      return [
+    case "teacher": {
+      const items: NavItem[] = [
         { label: "Dashboard", path: "/teacher", icon: <DashboardIcon /> },
         { label: "My Courses", path: "/teacher/courses", icon: <MenuBookIcon />, group: "Academics" },
         { label: "Attendance", path: "/teacher/attendance", icon: <EventNoteIcon />, group: "Academics" },
@@ -91,7 +92,23 @@ export function getNavItems(role: Role): NavItem[] {
         { label: "Notices", path: "/teacher/notices", icon: <CampaignIcon />, group: "Communication" },
         { label: "Messages", path: "/teacher/messages", icon: <ChatIcon />, group: "Communication" },
         { label: "Document Signatures", path: "/teacher/documents", icon: <HistoryEduIcon />, group: "Communication" },
+        { label: "Department Overview", path: "/teacher/department-overview", icon: <AccountBalanceIcon />, group: "HOD Functions" },
+        { label: "Attendance Approval", path: "/teacher/attendance-approval", icon: <EventNoteIcon />, group: "HOD Functions" },
+        { label: "Marks Approval", path: "/teacher/marks-approval", icon: <GradingIcon />, group: "HOD Functions" },
+        { label: "Faculty Workload", path: "/teacher/workload", icon: <AssessmentIcon />, group: "HOD Functions" },
+        { label: "Student Issues", path: "/teacher/student-issues", icon: <RuleIcon />, group: "HOD Functions" },
+        { label: "Academic Overview", path: "/teacher/academic-overview", icon: <PublicIcon />, group: "Dean Functions" },
+        { label: "Policy & Deadlines", path: "/teacher/policy-deadlines", icon: <EventIcon />, group: "Dean Functions" },
+        { label: "Inter-Department Reports", path: "/teacher/inter-dept-reports", icon: <AssessmentIcon />, group: "Dean Functions" },
+        { label: "Approvals Dashboard", path: "/teacher/approvals", icon: <PendingActionsIcon />, group: "Dean Functions" },
+        { label: "My Profile", path: "/teacher/profile", icon: <AccountCircleIcon />, group: "_bottom" },
       ];
+      return items.filter((item) => {
+        if (item.group === "HOD Functions") return teacherRole !== "professor";
+        if (item.group === "Dean Functions") return teacherRole === "dean";
+        return true;
+      });
+    }
     case "staff":
       return [{ label: "Dashboard", path: "/staff", icon: <DashboardIcon /> }];
     case "student":

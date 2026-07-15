@@ -51,6 +51,16 @@ const TeacherResourceRequests = lazy(() => import("@/pages/teacher/ResourceReque
 const TeacherNotices = lazy(() => import("@/pages/teacher/Notices"));
 const TeacherMessages = lazy(() => import("@/pages/teacher/Messages"));
 const TeacherDocumentSignatures = lazy(() => import("@/pages/teacher/DocumentSignatures"));
+const TeacherDepartmentOverview = lazy(() => import("@/pages/teacher/DepartmentOverview"));
+const TeacherAttendanceApproval = lazy(() => import("@/pages/teacher/AttendanceApproval"));
+const TeacherMarksApproval = lazy(() => import("@/pages/teacher/MarksApproval"));
+const TeacherFacultyWorkload = lazy(() => import("@/pages/teacher/FacultyWorkload"));
+const TeacherStudentIssues = lazy(() => import("@/pages/teacher/StudentIssues"));
+const TeacherAcademicOverview = lazy(() => import("@/pages/teacher/AcademicOverview"));
+const TeacherPolicyDeadlines = lazy(() => import("@/pages/teacher/PolicyDeadlines"));
+const TeacherInterDeptReports = lazy(() => import("@/pages/teacher/InterDeptReports"));
+const TeacherApprovalsDashboard = lazy(() => import("@/pages/teacher/ApprovalsDashboard"));
+const TeacherProfilePage = lazy(() => import("@/pages/teacher/Profile"));
 const StaffDashboard = lazy(() => import("@/pages/staff/Dashboard"));
 const StudentDashboard = lazy(() => import("@/pages/student/Dashboard"));
 
@@ -116,6 +126,16 @@ export const router = createBrowserRouter([
       { path: "teacher/notices", element: <TeacherNotices /> },
       { path: "teacher/messages", element: <TeacherMessages /> },
       { path: "teacher/documents", element: <TeacherDocumentSignatures /> },
+      { path: "teacher/department-overview", element: <TeacherDepartmentOverview /> },
+      { path: "teacher/attendance-approval", element: <TeacherAttendanceApproval /> },
+      { path: "teacher/marks-approval", element: <TeacherMarksApproval /> },
+      { path: "teacher/workload", element: <TeacherFacultyWorkload /> },
+      { path: "teacher/student-issues", element: <TeacherStudentIssues /> },
+      { path: "teacher/academic-overview", element: <TeacherAcademicOverview /> },
+      { path: "teacher/policy-deadlines", element: <TeacherPolicyDeadlines /> },
+      { path: "teacher/inter-dept-reports", element: <TeacherInterDeptReports /> },
+      { path: "teacher/approvals", element: <TeacherApprovalsDashboard /> },
+      { path: "teacher/profile", element: <TeacherProfilePage /> },
       { path: "staff", element: <StaffDashboard /> },
       { path: "student", element: <StudentDashboard /> },
     ],
