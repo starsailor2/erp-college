@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField,
   MenuItem, Select, InputLabel, FormControl, Stack, Typography, Grid, Snackbar,
@@ -18,7 +18,9 @@ import { getAttendanceStats, getTodayAttendance, markAttendance } from "@/api/at
 import { getPendingLeaveCount } from "@/api/leaveRequests";
 import { students } from "@/demo-data/people/students";
 import { courses } from "@/demo-data/academics/courses";
-import type { AttendanceRecord } from "@/types";
+import type { AttendanceRecord, Student } from "@/types";
+
+type AttendanceRow = AttendanceRecord & { student: Student };
 
 const emptyForm = { courseId: courses[0]?.id ?? "", date: "2026-07-14", session: "Morning (9:00 AM - 12:00 PM)" };
 
@@ -48,12 +50,11 @@ export default function Attendance() {
     : 0;
   const lowAttendanceCount = students.filter((s) => s.attendancePct < 75).length;
 
-  const rows = useMemo(() => records
+  const rows: AttendanceRow[] = records
     .map((r) => ({ ...r, student: students.find((s) => s.id === r.studentId) }))
-    .filter((r) => r.student)
+    .filter((r): r is AttendanceRow => !!r.student)
     .filter((r) => statusFilter === "all" || r.status === statusFilter)
-    .filter((r) => search === "" || r.student!.name.toLowerCase().includes(search.toLowerCase()) || r.student!.rollNo.toLowerCase().includes(search.toLowerCase())),
-    [records, statusFilter, search]);
+    .filter((r) => search === "" || r.student.name.toLowerCase().includes(search.toLowerCase()) || r.student.rollNo.toLowerCase().includes(search.toLowerCase()));
 
   const handleToggle = (studentId: string, current: "present" | "absent") => {
     const next = current === "present" ? "absent" : "present";
@@ -109,14 +110,14 @@ export default function Attendance() {
         <TextField size="small" placeholder="Search students..." value={search} onChange={(e) => setSearch(e.target.value)} sx={{ minWidth: 220 }} />
       </Stack>
 
-      <DataTable
+      <DataTable<AttendanceRow>
         pagination
         columns={[
-          { key: "rollNo", label: "Roll No", render: (row) => row.student!.rollNo },
-          { key: "name", label: "Student Name", render: (row) => row.student!.name },
-          { key: "program", label: "Program", render: (row) => row.student!.program },
+          { key: "rollNo", label: "Roll No", render: (row) => row.student.rollNo },
+          { key: "name", label: "Student Name", render: (row) => row.student.name },
+          { key: "program", label: "Program", render: (row) => row.student.program },
           { key: "status", label: "Today's Status", render: (row) => <StatusChip status={row.status} /> },
-          { key: "attendancePct", label: "Overall %", render: (row) => `${row.student!.attendancePct}%` },
+          { key: "attendancePct", label: "Overall %", render: (row) => `${row.student.attendancePct}%` },
           {
             key: "actions", label: "Action",
             render: (row) => (
