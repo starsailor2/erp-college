@@ -19,6 +19,7 @@ function generateDepartments(): DepartmentSummary[] {
       avgMarksPct: 68 + randomInt(0, 14),
       yearBreakdown: [1, 2, 3, 4].map((year) => ({ year, students: Math.round(totalStudents / 4), avgMarksPct: 65 + randomInt(0, 20) })),
       topPerformers,
+      completionPct: 60 + randomInt(0, 35),
     };
   });
 }

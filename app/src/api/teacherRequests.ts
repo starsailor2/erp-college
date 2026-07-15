@@ -28,3 +28,23 @@ export function addResourceRequest(entry: Omit<ResourceRequest, "id" | "hodStatu
   resourceRequests.unshift(full);
   return simulateRequest(full);
 }
+
+export type DeanRequestType = "leave" | "grade-change" | "resource";
+
+function listForType(type: DeanRequestType) {
+  if (type === "leave") return leaveRequests;
+  if (type === "grade-change") return gradeChangeRequests;
+  return resourceRequests;
+}
+
+export function approveDeanRequest(type: DeanRequestType, id: string): Promise<void> {
+  const row = listForType(type).find((r) => r.id === id);
+  if (row) row.deanStatus = "approved";
+  return simulateRequest(undefined);
+}
+
+export function rejectDeanRequest(type: DeanRequestType, id: string): Promise<void> {
+  const row = listForType(type).find((r) => r.id === id);
+  if (row) row.deanStatus = "rejected";
+  return simulateRequest(undefined);
+}
