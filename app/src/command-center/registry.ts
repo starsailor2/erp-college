@@ -6,6 +6,8 @@ import { departmentIntents } from "@/command-center/intents/departments";
 import { hostelIntents } from "@/command-center/intents/hostel";
 import { libraryIntents } from "@/command-center/intents/library";
 import { ticketIntents } from "@/command-center/intents/tickets";
+import { examAndNoticeIntents } from "@/command-center/intents/examsAndNotices";
+import { systemIntents } from "@/command-center/intents/system";
 
 // Order matters: interpret() returns the first matching intent, so more
 // specific/keyword-constrained intents should appear before broader ones.
@@ -17,4 +19,6 @@ export const intentDefinitions: IntentDefinition[] = [
   ...hostelIntents,
   ...libraryIntents,
   ...ticketIntents,
+  ...examAndNoticeIntents,
+  ...systemIntents,
 ];
