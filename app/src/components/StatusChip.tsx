@@ -83,6 +83,9 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   overloaded: { label: "Overloaded", color: statusTokens.critical, icon: WarningAmberIcon },
   // Operations tasks
   cannot_complete: { label: "Cannot Complete", color: statusTokens.critical, icon: CancelIcon },
+  // Semester results
+  pass: { label: "Pass", color: statusTokens.good, icon: CheckCircleIcon },
+  fail: { label: "Fail", color: statusTokens.critical, icon: CancelIcon },
 };
 
 interface StatusChipProps {
