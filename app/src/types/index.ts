@@ -768,3 +768,80 @@ export interface StudentFeeLedgerEntry {
   credit: number;
   balance: number;
 }
+
+// --- Student / Convocation, Fellowship, Placements, Hostel, Resources, Reports, Communication (Phase 4b) ---
+
+export interface StudentScholarship {
+  name: string;
+  amount: number;
+  eligibility: string;
+  deadline: string;
+  applied: boolean;
+}
+
+export type ScholarshipAppStatus = "pending" | "approved" | "rejected";
+export interface ScholarshipApplication {
+  name: string;
+  appliedOn: string;
+  status: ScholarshipAppStatus;
+}
+
+export interface PlacementDrive {
+  company: string;
+  role: string;
+  ctc: string;
+  date: string;
+  eligibility: string;
+}
+
+export type PlacementAppStatus = "applied" | "shortlisted" | "rejected" | "selected";
+export interface PlacementApplication {
+  company: string;
+  role: string;
+  appliedOn: string;
+  status: PlacementAppStatus;
+}
+
+export type HostelRequestType = "room_change" | "maintenance" | "leave" | "visitor_pass" | "lost_item";
+export type HostelRequestStatus = "pending" | "in_progress" | "resolved";
+export interface HostelRequest {
+  id: string;
+  type: HostelRequestType;
+  details: string;
+  submittedOn: string;
+  status: HostelRequestStatus;
+  timeline: { time: string; action: string }[];
+}
+
+export type ResourceBookingStatus = "confirmed" | "pending";
+export interface ResourceBooking {
+  id: string;
+  resourceName: string;
+  date: string;
+  timeSlot: string;
+  purpose: string;
+  status: ResourceBookingStatus;
+}
+
+export type StudentNoticeCategory = "academic" | "hostel" | "placement" | "library" | "general";
+export type StudentNoticeUrgency = "urgent" | "important" | "normal";
+export interface StudentNotice {
+  id: string;
+  title: string;
+  body: string;
+  date: string;
+  author: string;
+  category: StudentNoticeCategory;
+  urgency: StudentNoticeUrgency;
+  read: boolean;
+}
+
+export interface StudentMessage {
+  id: string;
+  from: string;
+  subject: string;
+  category: string;
+  timeAgo: string;
+  body: string;
+  read: boolean;
+}
