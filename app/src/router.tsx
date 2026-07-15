@@ -1,5 +1,6 @@
 import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
+import { useStaffRole } from "@/context/StaffRoleContext";
 
 const Layout = lazy(() => import("@/components/Layout"));
 
@@ -62,10 +63,26 @@ const TeacherInterDeptReports = lazy(() => import("@/pages/teacher/InterDeptRepo
 const TeacherApprovalsDashboard = lazy(() => import("@/pages/teacher/ApprovalsDashboard"));
 const TeacherProfilePage = lazy(() => import("@/pages/teacher/Profile"));
 const StaffDashboard = lazy(() => import("@/pages/staff/Dashboard"));
+const StaffCreateTask = lazy(() => import("@/pages/staff/CreateTask"));
+const StaffAssignTask = lazy(() => import("@/pages/staff/AssignTask"));
+const StaffTaskOverview = lazy(() => import("@/pages/staff/TaskOverview"));
+const StaffTaskDetail = lazy(() => import("@/pages/staff/TaskDetail"));
+const StaffTeamView = lazy(() => import("@/pages/staff/TeamView"));
+const StaffReports = lazy(() => import("@/pages/staff/Reports"));
+const StaffExecutorDashboard = lazy(() => import("@/pages/staff/ExecutorDashboard"));
+const StaffUpdateStatus = lazy(() => import("@/pages/staff/UpdateStatus"));
+const StaffCompletedTasks = lazy(() => import("@/pages/staff/CompletedTasks"));
+const StaffProfilePage = lazy(() => import("@/pages/staff/Profile"));
+const StaffNotifications = lazy(() => import("@/pages/staff/Notifications"));
 const StudentDashboard = lazy(() => import("@/pages/student/Dashboard"));
 
 const PortalSelection = lazy(() => import("@/pages/PortalSelection"));
 const LoginPage = lazy(() => import("@/pages/Login"));
+
+function StaffDashboardOrExecutor() {
+  const { role } = useStaffRole();
+  return role === "executor" ? <StaffExecutorDashboard /> : <StaffDashboard />;
+}
 
 export const router = createBrowserRouter([
   { path: "/", element: <PortalSelection /> },
@@ -136,7 +153,17 @@ export const router = createBrowserRouter([
       { path: "teacher/inter-dept-reports", element: <TeacherInterDeptReports /> },
       { path: "teacher/approvals", element: <TeacherApprovalsDashboard /> },
       { path: "teacher/profile", element: <TeacherProfilePage /> },
-      { path: "staff", element: <StaffDashboard /> },
+      { path: "staff", element: <StaffDashboardOrExecutor /> },
+      { path: "staff/create-task", element: <StaffCreateTask /> },
+      { path: "staff/assign-task", element: <StaffAssignTask /> },
+      { path: "staff/tasks", element: <StaffTaskOverview /> },
+      { path: "staff/tasks/:id", element: <StaffTaskDetail /> },
+      { path: "staff/team", element: <StaffTeamView /> },
+      { path: "staff/reports", element: <StaffReports /> },
+      { path: "staff/update-status", element: <StaffUpdateStatus /> },
+      { path: "staff/completed-tasks", element: <StaffCompletedTasks /> },
+      { path: "staff/profile", element: <StaffProfilePage /> },
+      { path: "staff/notifications", element: <StaffNotifications /> },
       { path: "student", element: <StudentDashboard /> },
     ],
   },
