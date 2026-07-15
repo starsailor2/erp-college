@@ -1,88 +1,77 @@
 import { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { Box, Grid, Paper, Typography } from "@mui/material";
 import PeopleIcon from "@mui/icons-material/People";
-import MenuBookIcon from "@mui/icons-material/MenuBook";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import GradingIcon from "@mui/icons-material/Grading";
 import { PageHeader } from "@/components/PageHeader";
 import { StatCard } from "@/components/StatCard";
-import { ChartCard } from "@/components/ChartCard";
-import { DataTable } from "@/components/DataTable";
-import StatusChip from "@/components/StatusChip";
 import { useColorMode } from "@/context/ColorModeContext";
-import { getChartPalette, getChartTooltipStyle, getIconAccent } from "@/theme/chartPalette";
-import { getNotifications, getUnreadNotificationCount } from "@/api/notifications";
-import type { Notification } from "@/types";
+import { getIconAccent } from "@/theme/chartPalette";
+import { getTeacherCourses } from "@/api/teacherCourses";
+import type { TeacherCourse } from "@/types";
 
-const weeklyActivity = [
-  { day: "Mon", count: 5 },
-  { day: "Tue", count: 6 },
-  { day: "Wed", count: 4 },
-  { day: "Thu", count: 7 },
-  { day: "Fri", count: 5 },
+const schedule = [
+  { title: "CS201 Lecture", time: "09:00 - 10:30", room: "Lab A" },
+  { title: "CS202 Lecture", time: "11:00 - 12:30", room: "Hall C" },
+  { title: "Dept Meeting", time: "14:00 - 15:30", room: "Conf Rm 1" },
+  { title: "Exam Invigilation - CS203", time: "16:00 - 18:00", room: "Exam Hall 2" },
 ];
+const pendingTasks = ["Attendance - CS201 Sec A", "Internal Marks - CS202 Quiz2", "Course Material - CS203", "Grade Change Request Review"];
 
 export default function Dashboard() {
   const { mode } = useColorMode();
-  const palette = getChartPalette(mode);
-  const [unread, setUnread] = useState(0);
-  const [rows, setRows] = useState<Notification[]>([]);
+  const navigate = useNavigate();
+  const [courses, setCourses] = useState<TeacherCourse[]>([]);
 
-  useEffect(() => {
-    let live = true;
-    getUnreadNotificationCount().then((count) => { if (live) setUnread(count); });
-    getNotifications().then((data) => { if (live) setRows(data); });
-    return () => { live = false; };
-  }, []);
+  useEffect(() => { getTeacherCourses().then(setCourses); }, []);
+
+  const totalStudents = courses.reduce((sum, c) => sum + c.studentIds.length, 0);
+  const avgAttendance = courses.length > 0 ? Math.round(courses.reduce((sum, c) => sum + c.avgAttendancePct, 0) / courses.length) : 0;
+  const avgMarks = courses.length > 0 ? Math.round(courses.reduce((sum, c) => sum + c.avgMarksPct, 0) / courses.length) : 0;
 
   return (
     <>
       <PageHeader eyebrow="Overview" title="Faculty Dashboard" />
       <Grid container spacing={2.5} sx={{ mb: 2.5 }}>
-        <Grid size={{ xs: 12, sm: 4 }}>
-          <StatCard title="Unread Notifications" icon={<NotificationsIcon />} color={getIconAccent(mode, "notifications")} numericValue={unread} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard title="Total Students" icon={<PeopleIcon />} color={getIconAccent(mode, "students")} numericValue={totalStudents} onClick={() => navigate("/teacher/students")} />
         </Grid>
-        <Grid size={{ xs: 12, sm: 4 }}>
-          <StatCard title="My Courses" icon={<MenuBookIcon />} color={getIconAccent(mode, "courses")} numericValue={4} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard title="Avg Attendance" icon={<EventNoteIcon />} color={getIconAccent(mode, "attendance")} value={`${avgAttendance}%`} onClick={() => navigate("/teacher/attendance")} />
         </Grid>
-        <Grid size={{ xs: 12, sm: 4 }}>
-          <StatCard title="Students Taught" icon={<PeopleIcon />} color={getIconAccent(mode, "students-taught")} numericValue={210} />
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard title="At-Risk Students" icon={<AssessmentIcon />} color={getIconAccent(mode, "at-risk")} numericValue={12} onClick={() => navigate("/teacher/students")} />
+        </Grid>
+        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <StatCard title="Avg Internal Marks" icon={<GradingIcon />} color={getIconAccent(mode, "marks")} value={`${avgMarks}%`} onClick={() => navigate("/teacher/marks")} />
         </Grid>
       </Grid>
+
       <Grid container spacing={2.5}>
-        <Grid size={12}>
-          <ChartCard eyebrow="This Week" title="Classes Conducted">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weeklyActivity}>
-                <CartesianGrid stroke={palette.grid} vertical={false} />
-                <XAxis dataKey="day" stroke={palette.axis} fontSize={12} />
-                <YAxis stroke={palette.axis} fontSize={12} />
-                <Tooltip {...getChartTooltipStyle(mode)} />
-                <Bar dataKey="count" fill={palette.categorical[0]} radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartCard>
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Paper elevation={0} sx={{ p: 3, height: "100%" }}>
+            <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>Today's Schedule</Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+              {schedule.map((s) => (
+                <Box key={s.title} sx={{ p: 1.5, borderLeft: 3, borderColor: "primary.main", bgcolor: "action.hover", borderRadius: 1 }}>
+                  <Typography variant="body2" fontWeight={600}>{s.title}</Typography>
+                  <Typography variant="caption" color="text.secondary">{s.time} · {s.room}</Typography>
+                </Box>
+              ))}
+            </Box>
+          </Paper>
         </Grid>
-        <Grid size={12}>
-          <DataTable<Notification>
-            title="Recent Notifications"
-            columns={[
-              { key: "title", label: "Title" },
-              { key: "postedBy", label: "Posted By" },
-              {
-                key: "read",
-                label: "Status",
-                render: (row) => <StatusChip status={row.read ? "read" : "unread"} />,
-              },
-              {
-                key: "timestamp",
-                label: "Date",
-                render: (row) => new Date(row.timestamp).toLocaleDateString(),
-              },
-            ]}
-            rows={rows}
-            emptyTitle="No notifications yet"
-          />
+        <Grid size={{ xs: 12, md: 6 }}>
+          <Paper elevation={0} sx={{ p: 3, height: "100%" }}>
+            <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 2 }}>Pending Tasks</Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+              {pendingTasks.map((t) => (
+                <Typography key={t} variant="body2">• {t}</Typography>
+              ))}
+            </Box>
+          </Paper>
         </Grid>
       </Grid>
     </>
