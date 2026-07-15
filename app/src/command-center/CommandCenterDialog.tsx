@@ -5,6 +5,8 @@ import Box from "@mui/material/Box";
 import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 import CircularProgress from "@mui/material/CircularProgress";
+import Chip from "@mui/material/Chip";
+import Typography from "@mui/material/Typography";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
@@ -13,16 +15,9 @@ import { getNavItems } from "@/components/navigation";
 import { interpret } from "@/command-center/interpret";
 import { searchNavItems } from "@/command-center/fallback/navSearch";
 import { searchRecords } from "@/command-center/fallback/recordSearch";
+import { commandCategories, matchCategory, type CommandCategory } from "@/command-center/categories";
 import ResultView from "@/command-center/ResultView";
 import type { CommandResult, CommandRecordRow } from "@/command-center/types";
-
-const EXAMPLE_QUERIES = [
-  "Students with pending fees",
-  "Students below 75% attendance",
-  "Open critical tickets",
-  "How many students absent today",
-  "Overdue library books",
-];
 
 interface CommandCenterDialogProps {
   open: boolean;
@@ -35,6 +30,7 @@ export default function CommandCenterDialog({ open, onClose }: CommandCenterDial
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<CommandResult | null>(null);
+  const [suggestedCategory, setSuggestedCategory] = useState<CommandCategory | null>(null);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const requestIdRef = useRef(0);
 
@@ -42,6 +38,7 @@ export default function CommandCenterDialog({ open, onClose }: CommandCenterDial
     if (open) {
       setQuery("");
       setResult(null);
+      setSuggestedCategory(null);
       setSelectedIndex(0);
       setLoading(false);
     }
@@ -52,18 +49,28 @@ export default function CommandCenterDialog({ open, onClose }: CommandCenterDial
     const thisRequestId = ++requestIdRef.current;
     if (!trimmed) {
       setResult(null);
+      setSuggestedCategory(null);
       setLoading(false);
       return;
     }
     setLoading(true);
     const timer = setTimeout(() => {
       const intent = interpret(trimmed);
+      const category = intent ? null : matchCategory(trimmed.toLowerCase());
+      if (category) {
+        setLoading(false);
+        setSelectedIndex(0);
+        setSuggestedCategory(category);
+        setResult(null);
+        return;
+      }
       Promise.all([intent ? intent.execute(trimmed) : Promise.resolve(null), searchRecords(trimmed)]).then(
         ([intentResult, recordHits]) => {
           if (thisRequestId !== requestIdRef.current) return; // stale response, ignore
           const navHits = searchNavItems(trimmed, navItems);
           setLoading(false);
           setSelectedIndex(0);
+          setSuggestedCategory(null);
           if (intentResult) {
             setResult(intentResult);
           } else if (recordHits.length > 0) {
@@ -82,19 +89,21 @@ export default function CommandCenterDialog({ open, onClose }: CommandCenterDial
   const isIdle = !query.trim();
 
   const listRows: CommandRecordRow[] = useMemo(() => {
-    if (isIdle) return EXAMPLE_QUERIES.map((text, i) => ({ id: `example-${i}`, primary: text, path: "" }));
+    if (isIdle) return [];
+    if (suggestedCategory) return suggestedCategory.examples.map((text, i) => ({ id: `suggestion-${i}`, primary: text, path: "" }));
     if (!result) return [];
     if (result.kind === "record-list" || result.kind === "nav-suggestions") return result.records;
     if (result.kind === "no-match") return result.suggestions;
     return [];
-  }, [isIdle, result]);
+  }, [isIdle, suggestedCategory, result]);
 
+  // Rows with an empty path are query text to fill in and re-run (idle
+  // examples, category suggestions), not a page/record to navigate to.
   const handleSelect = (row: CommandRecordRow) => {
-    if (isIdle) {
+    if (!row.path) {
       setQuery(row.primary);
       return;
     }
-    if (!row.path) return;
     navigate(row.path);
     onClose();
   };
@@ -139,10 +148,26 @@ export default function CommandCenterDialog({ open, onClose }: CommandCenterDial
       <Divider />
       <Box sx={{ maxHeight: 420, overflowY: "auto" }}>
         {isIdle ? (
+          <Box sx={{ p: 2 }}>
+            <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
+              Ask about
+            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+              {commandCategories.map((category) => (
+                <Chip
+                  key={category.id}
+                  label={category.label}
+                  clickable
+                  onClick={() => setQuery(category.examples[0])}
+                />
+              ))}
+            </Box>
+          </Box>
+        ) : suggestedCategory ? (
           <List dense disablePadding>
             {listRows.map((row, i) => (
               <ListItemButton key={row.id} selected={i === selectedIndex} onClick={() => handleSelect(row)}>
-                <ListItemText primary={row.primary} secondary={i === 0 ? "Try an example" : undefined} />
+                <ListItemText primary={row.primary} secondary={i === 0 ? `Try asking about ${suggestedCategory.label}` : undefined} />
               </ListItemButton>
             ))}
           </List>
