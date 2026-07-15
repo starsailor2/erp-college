@@ -81,6 +81,8 @@ const STATUS_MAP: Record<string, StatusMeta> = {
   // Workload
   normal: { label: "Normal", color: statusTokens.good, icon: CheckCircleIcon },
   overloaded: { label: "Overloaded", color: statusTokens.critical, icon: WarningAmberIcon },
+  // Operations tasks
+  cannot_complete: { label: "Cannot Complete", color: statusTokens.critical, icon: CancelIcon },
 };
 
 interface StatusChipProps {
