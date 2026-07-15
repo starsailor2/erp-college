@@ -386,3 +386,122 @@ export interface AdminProfile {
   totalActions: number;
   efficiencyPct: number;
 }
+
+// --- Teacher / Core, Academics, Students, Requests, Communication (Phase 2a) ---
+
+export type TeacherRole = "professor" | "hod" | "dean";
+
+export interface TeacherCourse {
+  id: string;
+  name: string;
+  section: string;
+  studentIds: string[];
+  avgAttendancePct: number;
+  avgMarksPct: number;
+}
+
+export type AttendanceMarkStatus = "present" | "absent" | "medical" | "other";
+export interface AttendanceSubmission {
+  id: string;
+  courseId: string;
+  section: string;
+  session: "forenoon" | "afternoon";
+  date: string;
+  records: { studentId: string; status: AttendanceMarkStatus; remarks: string }[];
+}
+
+export interface MarksSubmission {
+  id: string;
+  courseId: string;
+  assessment: string;
+  maxMarks: number;
+  date: string;
+  status: "approved" | "submitted" | "pending_hod_review";
+  records: { studentId: string; marks: number }[];
+}
+
+export type TeacherRequestStatus = "pending_approval" | "approved" | "rejected" | "escalated";
+export interface TeacherLeaveRequest {
+  id: string;
+  leaveType: string;
+  fromDate: string;
+  toDate: string;
+  reason: string;
+  coverageArrangements: string;
+  hodStatus: TeacherRequestStatus;
+  deanStatus: TeacherRequestStatus | null;
+  raisedOn: string;
+}
+
+export interface GradeChangeRequest {
+  id: string;
+  courseId: string;
+  studentRollNo: string;
+  assessment: string;
+  originalMark: number;
+  proposedMark: number;
+  reason: string;
+  hodStatus: TeacherRequestStatus;
+  deanStatus: TeacherRequestStatus | null;
+  raisedOn: string;
+}
+
+export interface ResourceRequest {
+  id: string;
+  resourceType: string;
+  description: string;
+  justification: string;
+  estimatedCost: number;
+  requiredBy: string;
+  hodStatus: TeacherRequestStatus;
+  deanStatus: TeacherRequestStatus | null;
+}
+
+export type TeacherNoticeAudience = "my_courses" | "department" | "institute";
+export interface TeacherNotice {
+  id: string;
+  title: string;
+  content: string;
+  audience: TeacherNoticeAudience;
+  priority: "normal" | "high" | "urgent";
+  expiryDate: string;
+  publishedDate: string;
+  views: number;
+}
+
+export interface MessageContact {
+  id: string;
+  name: string;
+  role: string;
+}
+export interface Message {
+  id: string;
+  contactId: string;
+  fromMe: boolean;
+  text: string;
+  timestamp: string;
+}
+
+export type TeacherDocSignStatus = "pending" | "in_progress" | "completed";
+export interface TeacherDocument {
+  id: string;
+  title: string;
+  docType: string;
+  fromName: string;
+  initiatedDate: string;
+  priority: "normal" | "high" | "urgent";
+  status: TeacherDocSignStatus;
+  direction: "assigned_to_me" | "sent_by_me";
+  progressPct?: number;
+}
+
+export interface DepartmentSummary {
+  name: string;
+  totalStudents: number;
+  facultyCount: number;
+  atRiskCount: number;
+  avgAttendancePct: number;
+  avgMarksPct: number;
+  yearBreakdown: { year: number; students: number; avgMarksPct: number }[];
+  topPerformers: { rollNo: string; name: string; avgMarksPct: number }[];
+}
