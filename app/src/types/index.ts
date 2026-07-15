@@ -606,3 +606,58 @@ export interface TeacherProfile {
   specializations: string[];
   yearsExperience: number;
 }
+
+// --- Staff / Operations (Phase 3) ---
+
+export type StaffRole = "assigner" | "executor";
+
+export type TaskPriority = "low" | "medium" | "high";
+export type TaskStatus = "pending" | "in_progress" | "completed" | "cannot_complete";
+export type TaskCategory = "maintenance" | "administrative" | "facilities" | "supplies" | "events" | "other";
+export type TaskApprovalStatus = "pending" | "approved" | "rejected";
+
+export interface OpsTask {
+  id: string;
+  title: string;
+  description: string;
+  staffInstructions: string;
+  priority: TaskPriority;
+  status: TaskStatus;
+  category: TaskCategory;
+  assigneeId: string | null;
+  createdAt: string;
+  dueDate: string;
+  completedAt?: string;
+  estimatedHours: number;
+  approvalStatus?: TaskApprovalStatus;
+  needsHelp: boolean;
+  helpNeededReason?: string;
+  cannotCompleteReason?: string;
+  notes?: string;
+  timeline: { time: string; action: string }[];
+}
+
+export interface OpsTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  department: string;
+  email: string;
+  phone: string;
+}
+
+export interface OpsNotification {
+  id: string;
+  message: string;
+  read: boolean;
+  time: string;
+  taskId: string | null;
+}
+
+export interface StaffProfile {
+  name: string;
+  email: string;
+  department: string;
+  phone: string;
+}
