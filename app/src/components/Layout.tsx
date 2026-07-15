@@ -3,6 +3,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar, Toolbar, Typography, Drawer, List, ListItemButton, ListItemIcon,
   ListItemText, IconButton, Box, Avatar, Tooltip, Badge, useMediaQuery, useTheme,
+  FormControl, MenuItem, Select,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsIcon from "@mui/icons-material/Notifications";
@@ -13,6 +14,8 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import { AnimatePresence, motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { useColorMode } from "@/context/ColorModeContext";
+import { TeacherRoleContext, useTeacherRoleState } from "@/context/TeacherRoleContext";
+import type { TeacherRole } from "@/types";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/api/notifications";
 import { getSidebarTokens } from "@/theme/tokens";
@@ -31,6 +34,7 @@ export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { role, user, logout } = useAuth();
   const { toggleColorMode, mode } = useColorMode();
+  const { role: teacherRole, setRole: setTeacherRole } = useTeacherRoleState();
   const sidebarTokens = getSidebarTokens(mode);
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,7 +42,7 @@ export default function Layout() {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const toggleSubmenu = (label: string) => setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
 
-  const navItems = useMemo(() => getNavItems(role), [role]);
+  const navItems = useMemo(() => getNavItems(role, teacherRole), [role, teacherRole]);
 
   const groups = useMemo(() => {
     const order: string[] = [];
@@ -51,7 +55,8 @@ export default function Layout() {
       }
       map.get(g)!.push(item);
     }
-    return order.map((g) => ({ group: g, items: map.get(g)! }));
+    const sortedOrder = [...order.filter((g) => g !== "_bottom"), ...order.filter((g) => g === "_bottom")];
+    return sortedOrder.map((g) => ({ group: g, items: map.get(g)! }));
   }, [navItems]);
 
   const [unreadNotifications, setUnreadNotifications] = useState(0);
@@ -186,7 +191,7 @@ export default function Layout() {
       <List sx={{ flex: 1, overflow: "auto", py: 1 }} component="nav">
         {groups.map(({ group, items }) => (
           <Box key={group || "ungrouped"}>
-            {group && (
+            {group && group !== "_bottom" && (
               <Typography
                 variant="caption"
                 sx={{
@@ -206,6 +211,7 @@ export default function Layout() {
   );
 
   return (
+    <TeacherRoleContext.Provider value={{ role: teacherRole, setRole: setTeacherRole }}>
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <AppBar
         position="fixed"
@@ -223,6 +229,20 @@ export default function Layout() {
           </Typography>
 
           <Box sx={{ flex: 1 }} />
+
+          {role === "teacher" && (
+            <FormControl size="small" sx={{ minWidth: 130, mr: 1 }}>
+              <Select
+                value={teacherRole}
+                onChange={(e) => setTeacherRole(e.target.value as TeacherRole)}
+                sx={{ fontSize: 14 }}
+              >
+                <MenuItem value="professor">Professor</MenuItem>
+                <MenuItem value="hod">HOD</MenuItem>
+                <MenuItem value="dean">Dean</MenuItem>
+              </Select>
+            </FormControl>
+          )}
 
           <Tooltip title="Sign Out">
             <IconButton onClick={handleLogout} sx={{ ml: 0.5, ...CHROME_ICON_SX }}>
@@ -294,5 +314,6 @@ export default function Layout() {
         </Box>
       </Box>
     </Box>
+    </TeacherRoleContext.Provider>
   );
 }
