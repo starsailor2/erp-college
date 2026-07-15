@@ -15,7 +15,9 @@ import { AnimatePresence, motion } from "motion/react";
 import { useAuth } from "@/context/AuthContext";
 import { useColorMode } from "@/context/ColorModeContext";
 import { TeacherRoleContext, useTeacherRoleState } from "@/context/TeacherRoleContext";
-import type { TeacherRole } from "@/types";
+import { StaffRoleContext, useStaffRoleState } from "@/context/StaffRoleContext";
+import type { TeacherRole, StaffRole } from "@/types";
+import { getStaffDisplayIdentity } from "@/api/staffProfile";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/api/notifications";
 import { getSidebarTokens } from "@/theme/tokens";
@@ -35,6 +37,7 @@ export default function Layout() {
   const { role, user, logout } = useAuth();
   const { toggleColorMode, mode } = useColorMode();
   const { role: teacherRole, setRole: setTeacherRole } = useTeacherRoleState();
+  const { role: staffRole, setRole: setStaffRole } = useStaffRoleState();
   const sidebarTokens = getSidebarTokens(mode);
   const navigate = useNavigate();
   const location = useLocation();
@@ -42,7 +45,7 @@ export default function Layout() {
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
   const toggleSubmenu = (label: string) => setOpenMenus((prev) => ({ ...prev, [label]: !prev[label] }));
 
-  const navItems = useMemo(() => getNavItems(role, teacherRole), [role, teacherRole]);
+  const navItems = useMemo(() => getNavItems(role, teacherRole, staffRole), [role, teacherRole, staffRole]);
 
   const groups = useMemo(() => {
     const order: string[] = [];
@@ -74,6 +77,8 @@ export default function Layout() {
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
   }, [location.pathname]);
+
+  const staffIdentity = role === "staff" ? getStaffDisplayIdentity(staffRole) : null;
 
   const handleLogout = () => {
     logout();
@@ -177,11 +182,11 @@ export default function Layout() {
     <Box sx={{ display: "flex", flexDirection: "column", height: "100%", bgcolor: sidebarTokens.background }}>
       <Box sx={{ p: 2, minHeight: 84, display: "flex", alignItems: "center", gap: 1.5, borderBottom: `1px solid ${sidebarTokens.divider}` }}>
         <Avatar sx={{ bgcolor: sidebarTokens.text, color: sidebarTokens.background, width: 36, height: 36, fontSize: 14, fontWeight: 700 }}>
-          {user?.name.charAt(0) ?? "U"}
+          {staffIdentity?.initial ?? user?.name.charAt(0) ?? "U"}
         </Avatar>
         <Box sx={{ minWidth: 0 }}>
           <Typography variant="subtitle2" noWrap sx={{ color: sidebarTokens.text }}>
-            {user?.name ?? "User"}
+            {staffIdentity?.name ?? user?.name ?? "User"}
           </Typography>
           <Typography variant="caption" noWrap sx={{ color: sidebarTokens.muted }}>
             {portalLabels[role]}
@@ -212,6 +217,7 @@ export default function Layout() {
 
   return (
     <TeacherRoleContext.Provider value={{ role: teacherRole, setRole: setTeacherRole }}>
+    <StaffRoleContext.Provider value={{ role: staffRole, setRole: setStaffRole }}>
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       <AppBar
         position="fixed"
@@ -240,6 +246,19 @@ export default function Layout() {
                 <MenuItem value="professor">Professor</MenuItem>
                 <MenuItem value="hod">HOD</MenuItem>
                 <MenuItem value="dean">Dean</MenuItem>
+              </Select>
+            </FormControl>
+          )}
+
+          {role === "staff" && (
+            <FormControl size="small" sx={{ minWidth: 130, mr: 1 }}>
+              <Select
+                value={staffRole}
+                onChange={(e) => setStaffRole(e.target.value as StaffRole)}
+                sx={{ fontSize: 14 }}
+              >
+                <MenuItem value="assigner">Assigner</MenuItem>
+                <MenuItem value="executor">Executor</MenuItem>
               </Select>
             </FormControl>
           )}
@@ -314,6 +333,7 @@ export default function Layout() {
         </Box>
       </Box>
     </Box>
+    </StaffRoleContext.Provider>
     </TeacherRoleContext.Provider>
   );
 }

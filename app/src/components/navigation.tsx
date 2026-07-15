@@ -1,4 +1,4 @@
-import type { Role, TeacherRole } from "@/types";
+import type { Role, TeacherRole, StaffRole } from "@/types";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PeopleIcon from "@mui/icons-material/People";
 import SchoolIcon from "@mui/icons-material/School";
@@ -33,6 +33,11 @@ import RuleIcon from "@mui/icons-material/Rule";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import ChatIcon from "@mui/icons-material/Chat";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
+import AddTaskIcon from "@mui/icons-material/AddTask";
+import AssignmentIndIcon from "@mui/icons-material/AssignmentInd";
+import FactCheckIcon from "@mui/icons-material/FactCheck";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import UpdateIcon from "@mui/icons-material/Update";
 import type { ReactNode } from "react";
 
 export interface NavItem {
@@ -43,7 +48,7 @@ export interface NavItem {
   children?: { label: string; path: string }[];
 }
 
-export function getNavItems(role: Role, teacherRole: TeacherRole = "professor"): NavItem[] {
+export function getNavItems(role: Role, teacherRole: TeacherRole = "professor", staffRole: StaffRole = "assigner"): NavItem[] {
   switch (role) {
     case "admin":
       return [
@@ -109,8 +114,24 @@ export function getNavItems(role: Role, teacherRole: TeacherRole = "professor"):
         return true;
       });
     }
-    case "staff":
-      return [{ label: "Dashboard", path: "/staff", icon: <DashboardIcon /> }];
+    case "staff": {
+      const items: NavItem[] = [
+        { label: "Dashboard", path: "/staff", icon: <DashboardIcon /> },
+        { label: "Create Task", path: "/staff/create-task", icon: <AddTaskIcon />, group: "Task Management" },
+        { label: "Assign Task", path: "/staff/assign-task", icon: <AssignmentIndIcon />, group: "Task Management" },
+        { label: "Task Overview", path: "/staff/tasks", icon: <AssignmentIcon />, group: "Task Management" },
+        { label: "Team View", path: "/staff/team", icon: <GroupsIcon />, group: "Team" },
+        { label: "Reports", path: "/staff/reports", icon: <BarChartIcon />, group: "Analytics" },
+        { label: "Update Status", path: "/staff/update-status", icon: <UpdateIcon />, group: "My Work" },
+        { label: "Completed Tasks", path: "/staff/completed-tasks", icon: <FactCheckIcon />, group: "My Work" },
+        { label: "My Profile", path: "/staff/profile", icon: <AccountCircleIcon />, group: "_bottom" },
+      ];
+      return items.filter((item) => {
+        if (item.group === "Task Management" || item.group === "Team" || item.group === "Analytics") return staffRole === "assigner";
+        if (item.group === "My Work") return staffRole === "executor";
+        return true;
+      });
+    }
     case "student":
       return [{ label: "Dashboard", path: "/student", icon: <DashboardIcon /> }];
   }
