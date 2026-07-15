@@ -661,3 +661,110 @@ export interface StaffProfile {
   department: string;
   phone: string;
 }
+
+// --- Student / Core, Academics, Finance (Phase 4a) ---
+
+export interface StudentProfile {
+  name: string;
+  rollNo: string;
+  collegeEmail: string;
+  personalEmail: string;
+  mobile: string;
+  dob: string;
+  bloodGroup: string;
+  fatherName: string;
+  address: string;
+  program: string;
+  branch: string;
+  batch: string;
+  currentSemester: number;
+  cgpa: number;
+  creditsEarned: number;
+  admissionDate: string;
+  status: "active" | "inactive";
+}
+
+export type CourseGrade = "A+" | "A" | "B+" | "B" | "C+" | "C" | "F" | "-";
+export interface StudentCourse {
+  code: string;
+  name: string;
+  instructor: string;
+  section: string;
+  credits: number;
+  semester: number;
+  grade: CourseGrade;
+  attendancePct: number;
+}
+
+export type CourseCategory = "core" | "elective" | "interdisciplinary" | "minor";
+export interface RegistrationCourse {
+  code: string;
+  name: string;
+  credits: number;
+  category: CourseCategory;
+  instructor: string;
+  seatsAvailable: number;
+}
+
+export interface AttendanceSubject {
+  code: string;
+  name: string;
+  attended: number;
+  total: number;
+}
+
+export interface MarksSubject {
+  code: string;
+  name: string;
+  test1: number;
+  test2: number;
+  assignment: number;
+  total: number;
+  maxTotal: number;
+}
+
+export type SemesterResultStatus = "pass" | "fail" | "pending";
+export interface SemesterResult {
+  semester: number;
+  year: string;
+  sgpa: number;
+  credits: number;
+  result: SemesterResultStatus;
+}
+
+export type AcademicRequestType = "course_drop" | "section_change" | "re_evaluation" | "grade_improvement" | "leave_application";
+export type StudentRequestStatus = "pending" | "approved" | "rejected";
+export interface StudentAcademicRequest {
+  id: string;
+  type: AcademicRequestType;
+  details: string;
+  submittedOn: string;
+  status: StudentRequestStatus;
+}
+
+export type StudentFeeStatus = "paid" | "pending" | "overdue";
+export interface FeeSemesterRow {
+  semester: number;
+  year: string;
+  totalFee: number;
+  paid: number;
+  dueDate: string;
+  status: StudentFeeStatus;
+}
+
+export interface PaymentTransaction {
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
+  mode: string;
+  status: "success" | "pending" | "failed";
+}
+
+export interface StudentFeeLedgerEntry {
+  date: string;
+  particulars: string;
+  debit: number;
+  credit: number;
+  balance: number;
+}
