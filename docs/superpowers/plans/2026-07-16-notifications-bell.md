@@ -204,7 +204,10 @@ with:
       : getUnreadNotificationCount();
     countPromise.then((count) => { if (live) setUnreadNotifications(count); });
     return () => { live = false; };
-  }, [role, notifRefreshKey]);
+    // location.pathname is a dependency (unused directly) so Staff's badge
+    // recounts after using their own Notifications page, since Layout
+    // persists across in-portal navigation and never remounts on its own.
+  }, [role, notifRefreshKey, location.pathname]);
 
   const handleBellClick = (event: MouseEvent<HTMLElement>) => {
     if (role === "staff") {
@@ -275,7 +278,7 @@ Start the dev server if it isn't running (`npm run dev` from `app/`). For each o
 1. Log in as **Operations** (Staff). Note the bell's badge count.
 2. Open `/staff/notifications` directly in another check (or note the page's own unread count via its rows) and confirm the bell's badge count matches the number of rows with `read: false` there — not the generic feed's count.
 3. Click the bell. Confirm it navigates straight to `/staff/notifications` (the existing page) — no popover appears for this portal.
-4. On that page, click "Mark all read", then navigate away and back to any other Staff page. Confirm the bell's badge count is now 0 (re-fetches on the role-scoped effect).
+4. On that page, click "Mark all read", then navigate to any other Staff page (e.g. Dashboard). Confirm the bell's badge count is now 0 — this relies on `location.pathname` being a dependency of the count effect, since `Layout` persists across in-portal navigation and would otherwise never re-fetch.
 
 - [ ] **Step 9: Commit**
 

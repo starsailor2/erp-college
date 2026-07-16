@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useRef, useState, useEffect } from "react";
+import { Suspense, useMemo, useRef, useState, useEffect, type MouseEvent } from "react";
 import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   AppBar, Toolbar, Typography, Drawer, List, ListItemButton, ListItemIcon,
@@ -20,6 +20,8 @@ import type { TeacherRole, StaffRole } from "@/types";
 import { getStaffDisplayIdentity } from "@/api/staffProfile";
 import { getNavItems, type NavItem } from "@/components/navigation";
 import { getUnreadNotificationCount } from "@/api/notifications";
+import { getOpsNotifications } from "@/api/staffNotifications";
+import NotificationsPopover from "@/components/NotificationsPopover";
 import { getSidebarTokens } from "@/theme/tokens";
 import CommandCenterDialog from "@/command-center/CommandCenterDialog";
 import { useCommandCenterHotkey } from "@/command-center/useCommandCenterHotkey";
@@ -67,11 +69,27 @@ export default function Layout() {
   }, [navItems]);
 
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [notifRefreshKey, setNotifRefreshKey] = useState(0);
+  const [notifAnchorEl, setNotifAnchorEl] = useState<HTMLElement | null>(null);
   useEffect(() => {
     let live = true;
-    getUnreadNotificationCount().then((count) => { if (live) setUnreadNotifications(count); });
+    const countPromise = role === "staff"
+      ? getOpsNotifications().then((rows) => rows.filter((r) => !r.read).length)
+      : getUnreadNotificationCount();
+    countPromise.then((count) => { if (live) setUnreadNotifications(count); });
     return () => { live = false; };
-  }, []);
+    // location.pathname is a dependency (unused directly) so Staff's badge
+    // recounts after using their own Notifications page, since Layout
+    // persists across in-portal navigation and never remounts on its own.
+  }, [role, notifRefreshKey, location.pathname]);
+
+  const handleBellClick = (event: MouseEvent<HTMLElement>) => {
+    if (role === "staff") {
+      navigate("/staff/notifications");
+    } else {
+      setNotifAnchorEl(event.currentTarget);
+    }
+  };
 
   // The scrollable area is this main Box (overflow: auto), not the window -
   // React Router doesn't reset scroll position on client-side navigation the
@@ -282,12 +300,20 @@ export default function Layout() {
             </IconButton>
           </Tooltip>
           <Tooltip title="Notifications">
-            <Box sx={{ display: "flex", alignItems: "center", ml: 0.5, px: 0.5, ...CHROME_ICON_SX }}>
+            <IconButton onClick={handleBellClick} sx={{ ml: 0.5, ...CHROME_ICON_SX }}>
               <Badge badgeContent={unreadNotifications} color="error">
                 <NotificationsIcon sx={{ color: "text.secondary" }} />
               </Badge>
-            </Box>
+            </IconButton>
           </Tooltip>
+          {role !== "staff" && (
+            <NotificationsPopover
+              open={!!notifAnchorEl}
+              anchorEl={notifAnchorEl}
+              onClose={() => setNotifAnchorEl(null)}
+              onReadStateChanged={() => setNotifRefreshKey((k) => k + 1)}
+            />
+          )}
         </Toolbar>
       </AppBar>
 
